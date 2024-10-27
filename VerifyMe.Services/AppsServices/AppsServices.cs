@@ -12,6 +12,7 @@ public class AppsServices(VerifyStorage storage)
     
     public async Task CreateApp(App app)
     {
+        app.DateTimeCreated = DateTime.Now;
         await storage.Apps.CreateApp(app);
     }
 

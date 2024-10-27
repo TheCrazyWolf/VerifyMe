@@ -13,7 +13,7 @@ public class SmsService(VerifyStorage storage, ITelegramBotClient botClient)
         if (user == null) return 404;
 
         var isSuccess = await botClient.TrySendMessage(user.Id, message);
-        Sms sms = new Sms { AppId = appId, UserId = user.Id, Message = message, IsDelivered  = isSuccess};
+        Sms sms = new Sms { AppId = appId, UserId = user.Id, Message = message, IsDelivered  = isSuccess, DateTimeSend = DateTime.Now};
         await storage.Sms.CreateSms(sms);
         return 200;
     }

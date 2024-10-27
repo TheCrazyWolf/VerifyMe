@@ -11,6 +11,7 @@ public class UsersService(VerifyStorage storage)
 
         if (userFromStorage is null)
         {
+            user.DateTimeRegister = DateTime.Now;
             await storage.Users.AddUser(user);
             return;
         }
