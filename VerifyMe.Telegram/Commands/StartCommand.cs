@@ -10,13 +10,13 @@ public class StartCommand : BaseCommand
 {
     public override string Command { get; } = "/start";
 
-    private string startMessage = "Вам необходимо подтвердить свой номер телефона " +
-                                  "для получения кодов подтверждения в онлайн сервисах";
+    private readonly string _startMessage = "Вам необходимо подтвердить свой номер телефона " +
+                                           "для получения кодов подтверждения в онлайн сервисах";
 
     public override async Task ExecuteAsync(ITelegramBotClient client, Message message)
     {
         KeyboardButton button = KeyboardButton.WithRequestContact("Подтвердить номер телефона");
         ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(button) { ResizeKeyboard = true};
-        await client.TrySendMessage(message.Chat.Id, startMessage, replyMarkup: keyboard);
+        await client.TrySendMessage(message.Chat.Id, _startMessage, replyMarkup: keyboard);
     }
 }
