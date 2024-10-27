@@ -3,16 +3,38 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using VerifyMe.Telegram.Commands;
+using VerifyMe.Telegram.Common;
 
 namespace VerifyMe.Telegram;
 
 public class UpdateHandler(ILogger<UpdateHandler> logger) : IUpdateHandler
 {
+
+    private IList<BaseCommand> _commands = new List<BaseCommand>()
+    {
+        new StartCommand()
+    };
+    
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
         CancellationToken cancellationToken)
     {
         switch (update.Type)
         {
+            case UpdateType.Message when update.Message?.From != null:
+            {
+                foreach (var command in _commands)
+                {
+                    if(!command.Contains(update.Message))
+                        continue;
+                    
+                 //   logger.LogInformation($"Обработка команды: {command.Command}. от: ID {update.Message.From.Id} в чате: {update.Message.Chat.Id}");
+                    await command.ExecuteAsync(botClient, update.Message);
+                }
+                //logger.LogInformation($"Сообщение: {update.Message.MessageId}. от: ID {update.Message.From.Id} в чате: {update.Message.Chat.Id} c текстом: {update.Message.Text}");
+                break;
+            }
+            
             case UpdateType.Unknown:
                 break;
             case UpdateType.InlineQuery:
