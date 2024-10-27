@@ -33,4 +33,9 @@ public class AppRepository(VerifyContext ef)
         ef.Remove(app);
         await ef.SaveChangesAsync();
     }
+
+    public async Task<App?> GetAppByAccessToken(string accessToken)
+    {
+        return await ef.Apps.FirstOrDefaultAsync(x => x.AccessToken == accessToken);
+    }
 }
