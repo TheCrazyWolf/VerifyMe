@@ -10,6 +10,11 @@ public class AppsServices(VerifyStorage storage)
         return await storage.Apps.GetAppById(appId);
     }
     
+    public async Task<App?> GetAppByAccessToken(string accessToken)
+    {
+        return await storage.Apps.GetAppByAccessToken(accessToken);
+    }
+    
     public async Task CreateApp(App app)
     {
         app.DateTimeCreated = DateTime.Now;
