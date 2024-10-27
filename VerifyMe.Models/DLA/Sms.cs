@@ -23,6 +23,11 @@ public class Sms : Entity
     public string Message { get; set; } = string.Empty;
     
     /// <summary>
+    /// Дата и время отправки сообщения
+    /// </summary>
+    public DateTime DateTimeSend { get; set; }  
+    
+    /// <summary>
     /// Доставлен ?
     /// </summary>
     public bool IsDelivered { get; set; }
