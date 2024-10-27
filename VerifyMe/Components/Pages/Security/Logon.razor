@@ -34,9 +34,9 @@
     /// </summary>
     private async Task CheckPassword()
     {
-        if (Config.GetValue<string>("Password") != _password) return;
-        await Storage.SetItemAsync("Password", _password);
+        if (Config.GetValue<string>("AdminPasswordSecurity") != _password) return;
+        await Storage.SetItemAsync("AdminPasswordSecurity", _password);
         await InvokeAsync(StateHasChanged);
-        Navigation.NavigateTo("/admin");
+        Navigation.NavigateTo("/");
     }
 }
