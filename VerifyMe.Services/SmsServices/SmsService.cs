@@ -23,6 +23,7 @@ public class SmsService(VerifyStorage storage, ITelegramBotClient botClient)
         foreach (var phoneNumber in phoneNumbers)
         {
             await SendSmsAsync(app, phoneNumber, message);
+            await Task.Delay(10000);
         }
     }
 }
