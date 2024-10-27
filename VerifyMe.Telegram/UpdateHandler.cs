@@ -3,14 +3,14 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using VerifyMe.Services.Users;
 using VerifyMe.Telegram.Commands;
 using VerifyMe.Telegram.Common;
 
 namespace VerifyMe.Telegram;
 
-public class UpdateHandler(ILogger<UpdateHandler> logger) : IUpdateHandler
+public class UpdateHandler(ILogger<UpdateHandler> logger, UsersService usersService) : IUpdateHandler
 {
-
     private IList<BaseCommand> _commands = new List<BaseCommand>()
     {
         new StartCommand()
@@ -23,7 +23,7 @@ public class UpdateHandler(ILogger<UpdateHandler> logger) : IUpdateHandler
         {
             case UpdateType.Message when update.Message is { From: not null, Contact: not null }:
             {
-                await new VerifyMeCommand().ExecuteAsync(botClient, update.Message);
+                await new VerifyMeCommand(usersService).ExecuteAsync(botClient, update.Message);
                 break;
             }
             

@@ -1,12 +1,14 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
+using VerifyMe.Services.Users;
 using VerifyMe.Telegram.Common;
 using VerifyMe.Telegram.Extensions;
+using User = VerifyMe.Models.DLA.User;
 
 namespace VerifyMe.Telegram.Commands;
 
-public class VerifyMeCommand : BaseCommand
+public class VerifyMeCommand(UsersService usersService) : BaseCommand
 {
     public override string Command { get; } = string.Empty;
 
@@ -24,6 +26,12 @@ public class VerifyMeCommand : BaseCommand
             return;
         }
 
-        await client.TrySendMessage(message.Chat.Id, _successVerifyed, replyMarkup: new ReplyKeyboardRemove());
+        if (message.Contact != null)
+        {
+            await usersService.AddOrUpdate(new User()
+                { Id = message.Contact.UserId ?? 0, PhoneNumber = message.Contact.PhoneNumber });
+            
+            await client.TrySendMessage(message.Chat.Id, _successVerifyed, replyMarkup: new ReplyKeyboardRemove());
+        }
     }
 }

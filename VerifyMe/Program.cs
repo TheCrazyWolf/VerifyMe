@@ -1,6 +1,9 @@
 using MudBlazor.Services;
 using Telegram.Bot;
 using VerifyMe.Components;
+using VerifyMe.Services.Users;
+using VerifyMe.Storage;
+using VerifyMe.Storage.Context;
 using VerifyMe.Telegram;
 using VerifyMe.Telegram.Implementations;
 
@@ -18,6 +21,9 @@ builder.Services.AddHttpClient("telegram_bot_client").RemoveAllLoggers()
 builder.Services.AddScoped<UpdateHandler>();
 builder.Services.AddScoped<ReceiverService>();
 builder.Services.AddHostedService<PollingService>();
+builder.Services.AddScoped<VerifyContext>();
+builder.Services.AddScoped<VerifyStorage>();
+builder.Services.AddScoped<UsersService>();
 
 // Add MudBlazor services
 builder.Services.AddMudServices();
