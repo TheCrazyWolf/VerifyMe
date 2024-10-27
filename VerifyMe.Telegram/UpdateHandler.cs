@@ -3,7 +3,7 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using VerifyMe.Services.Users;
+using VerifyMe.Services.UsersServices;
 using VerifyMe.Telegram.Commands;
 using VerifyMe.Telegram.Common;
 

@@ -1,7 +1,7 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using VerifyMe.Services.Users;
+using VerifyMe.Services.UsersServices;
 using VerifyMe.Telegram.Common;
 using VerifyMe.Telegram.Extensions;
 using User = VerifyMe.Models.DLA.User;

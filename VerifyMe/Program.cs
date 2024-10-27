@@ -1,7 +1,7 @@
 using MudBlazor.Services;
 using Telegram.Bot;
 using VerifyMe.Components;
-using VerifyMe.Services.Users;
+using VerifyMe.Services.UsersServices;
 using VerifyMe.Storage;
 using VerifyMe.Storage.Context;
 using VerifyMe.Telegram;
