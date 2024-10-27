@@ -1,0 +1,42 @@
+﻿@page "/page/logon"
+
+@using Blazored.LocalStorage
+@using VerifyMe.Components.Layout
+@layout LogonLayout;
+
+@inject IConfiguration Config;
+@inject ILocalStorageService Storage;
+@inject NavigationManager Navigation;
+
+<div style="height: 100%;" class="d-flex align-items-center justify-content-center">
+    <div style="width: 550px;" class="card shadow-lg rounded">
+        <div class="card-body">
+            <label>Авторизация</label>
+            <div class="mt-2">
+                <MudTextField @bind-Value="_password" InputType="InputType.Password" Label="Пароль" Variant="Variant.Text"></MudTextField>
+                <MudAlert Class="mt-2" Severity="Severity.Info">В следующих раз ввод пароля не потребуется</MudAlert>
+                <MudButton Class="mt-2" OnClick="CheckPassword" Variant="Variant.Outlined"
+                           Color="Color.Info">Вход</MudButton>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+   
+    /// <summary>
+    /// Привязанное боле к Input для ввода пароля
+    /// </summary>
+    private string _password = "";
+    
+    /// <summary>
+    /// Проверяем пароль админа
+    /// </summary>
+    private async Task CheckPassword()
+    {
+        if (Config.GetValue<string>("Password") != _password) return;
+        await Storage.SetItemAsync("Password", _password);
+        await InvokeAsync(StateHasChanged);
+        Navigation.NavigateTo("/admin");
+    }
+}

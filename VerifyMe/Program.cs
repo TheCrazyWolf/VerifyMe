@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using MudBlazor.Services;
 using Telegram.Bot;
 using VerifyMe.Components;
@@ -31,6 +32,7 @@ builder.Services.AddScoped<AppsServices>();
 
 // Add MudBlazor services
 builder.Services.AddMudServices();
+builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddControllers();
 // Add services to the container.
