@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -17,7 +18,9 @@ namespace VerifyMe.Storage.Migrations
                     Id = table.Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     AccessToken = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false),
+                    DateTimeCreated = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,7 +33,8 @@ namespace VerifyMe.Storage.Migrations
                 {
                     Id = table.Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: false)
+                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: false),
+                    DateTimeRegister = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,6 +50,7 @@ namespace VerifyMe.Storage.Migrations
                     UserId = table.Column<long>(type: "INTEGER", nullable: true),
                     AppId = table.Column<long>(type: "INTEGER", nullable: true),
                     Message = table.Column<string>(type: "TEXT", nullable: false),
+                    DateTimeSend = table.Column<DateTime>(type: "TEXT", nullable: false),
                     IsDelivered = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
