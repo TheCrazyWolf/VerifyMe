@@ -24,6 +24,7 @@ public class UpdateHandler(ILogger<UpdateHandler> logger, UsersService usersServ
             case UpdateType.Message when update.Message is { From: not null, Contact: not null }:
             {
                 await new VerifyMeCommand(usersService).ExecuteAsync(botClient, update.Message);
+                logger.LogInformation($"Сообщение: {update.Message.MessageId}. от: ID {update.Message.From.Id} в чате: {update.Message.Chat.Id} c текстом: {update.Message.Text}");logger.LogInformation($"Сообщение: {update.Message.MessageId}. от: ID {update.Message.From.Id} в чате: {update.Message.Chat.Id} c текстом: {update.Message.Contact.PhoneNumber}");
                 break;
             }
             
@@ -34,10 +35,9 @@ public class UpdateHandler(ILogger<UpdateHandler> logger, UsersService usersServ
                     if(!command.Contains(update.Message))
                         continue;
                     
-                    //   logger.LogInformation($"Обработка команды: {command.Command}. от: ID {update.Message.From.Id} в чате: {update.Message.Chat.Id}");
+                    logger.LogInformation($"Обработка команды: {command.Command}. от: ID {update.Message.From.Id} в чате: {update.Message.Chat.Id}");
                     await command.ExecuteAsync(botClient, update.Message);
                 }
-                //logger.LogInformation($"Сообщение: {update.Message.MessageId}. от: ID {update.Message.From.Id} в чате: {update.Message.Chat.Id} c текстом: {update.Message.Text}");
                 break;
             }
             
