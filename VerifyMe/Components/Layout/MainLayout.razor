@@ -4,19 +4,22 @@
 <MudPopoverProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
-<MudLayout>
-    <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
-        <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
+
+<MudLayout Style="background-color: #e3eaf2;">
+    <MudAppBar Style="background-color: #e3eaf2;" Elevation="0">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+        <MudText Typo="Typo.subtitle1" Color="Color.Dark" Class="ml-3">VerifyMe .NET</MudText>
         <MudSpacer/>
-        <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle"/>
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End"/>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+    <MudDrawer Style="background-color: #e3eaf2;" @bind-Open="_drawerOpen"
+               Width="300px"
+               ClipMode="DrawerClipMode.Always" Elevation="0">
         <NavMenu/>
     </MudDrawer>
-    <MudMainContent Class="mt-16 pa-4">
-        @Body
+    <MudMainContent>
+        <MudPaper Style="overflow-y: scroll; padding: 15px; margin: 10px 20px 10px 20px; height: 88vh;">
+            @Body
+        </MudPaper>
     </MudMainContent>
 </MudLayout>
 
@@ -29,7 +32,7 @@
 
 @code {
     private bool _drawerOpen = true;
-    private bool _isDarkMode = true;
+    private bool _isDarkMode = false;
     private MudTheme? _theme = null;
 
     protected override void OnInitialized()

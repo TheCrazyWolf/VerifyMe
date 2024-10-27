@@ -1,5 +1,13 @@
-﻿<MudNavMenu>
-    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
-    <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
-</MudNavMenu>
+﻿<MudPaper Style="background-color: #e3eaf2;" Width="300px" Elevation="0">
+    <MudNavMenu Rounded="true" Margin="Margin.Dense" Class="pa-2">
+        <MudNavLink Href="/index" Icon="@Icons.Material.Filled.Home">Главная</MudNavLink>
+        <MudNavLink Href="/admin" Icon="@Icons.Material.Filled.Science">Админ панель</MudNavLink>
+        @*@foreach (var menu in _widgetMenus)
+        {
+            <MudNavLink Href="@GetUrl(menu)" Match="NavLinkMatch.All"
+                        Icon="@Icons.Material.Filled.Code">
+                @menu.ShortPath
+            </MudNavLink>
+        }*@
+    </MudNavMenu>
+</MudPaper>
