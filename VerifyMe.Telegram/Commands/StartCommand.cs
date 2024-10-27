@@ -16,8 +16,7 @@ public class StartCommand : BaseCommand
     public override async Task ExecuteAsync(ITelegramBotClient client, Message message)
     {
         KeyboardButton button = KeyboardButton.WithRequestContact("Подтвердить номер телефона");
-        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(button);
-        keyboard.ResizeKeyboard = true;
+        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(button) { ResizeKeyboard = true};
         await client.TrySendMessage(message.Chat.Id, startMessage, replyMarkup: keyboard);
     }
 }
