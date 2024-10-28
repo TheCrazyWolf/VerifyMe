@@ -22,13 +22,17 @@ public class SmsService(VerifyStorage storage, ITelegramBotClient botClient)
         return new SmsResult(isSuccess, isSuccess ? "Сообщение доставлено" : "Пользователь удалил бота или телеграмм недоступен");
     }
     
-    public async Task SendSmsAsync(App app, IList<string> phoneNumbers, string message)
+    public async Task<IList<SmsResultExtended>> SendSmsAsync(App app, IList<PostSendSms> dtos)
     {
-        foreach (var phoneNumber in phoneNumbers)
+        IList<SmsResultExtended> resultExtendeds = new List<SmsResultExtended>();
+        foreach (var dto in dtos)
         {
-            await SendSmsAsync(app, phoneNumber, message);
+            var result =await SendSmsAsync(app, dto.Phone, dto.Message);
+            resultExtendeds.Add(new SmsResultExtended(result.IsSuccess, dto.Phone, result.SystemMessage));
             await Task.Delay(10000);
         }
+        
+        return resultExtendeds;
     }
 
     public async Task<IList<Sms>> GetSmsByAppId(long appId)

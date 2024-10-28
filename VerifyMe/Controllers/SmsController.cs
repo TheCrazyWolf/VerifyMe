@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections;
+using Microsoft.AspNetCore.Mvc;
 using VerifyMe.Models.DTO;
 using VerifyMe.Models.DTO.Results;
 using VerifyMe.Services.AppsServices;
@@ -18,5 +19,13 @@ public class SmsController(SmsService smsService, AppsServices appsServices) : C
         return await smsService.SendSmsAsync(application, dto.Phone, dto.Message);
     }
     
-    
+    [HttpPost("SendMany")]
+    public async Task<IActionResult> SendMany([FromHeader] string accessToken, [FromBody] IList<PostSendSms> dto, 
+        CancellationToken cancellationToken)
+    {
+        var application = await appsServices.GetAppByAccessToken(accessToken);
+        if(application == null) return Ok(new SmsResult(false,"Доступ запрещен. Проверьте передачу токена в заголовке AccessToken"));
+        cancellationToken.ThrowIfCancellationRequested();
+        return Ok(await smsService.SendSmsAsync(application, dto));
+    }
 }
