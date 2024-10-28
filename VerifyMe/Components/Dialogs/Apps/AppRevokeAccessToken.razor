@@ -1,0 +1,45 @@
+﻿@using VerifyMe.Services.AppsServices
+@using App = VerifyMe.Models.DLA.App
+
+@inject AppsServices AppsService;
+<MudDialog>
+    <DialogContent>
+        <EditForm Model="@App" >
+            <DataAnnotationsValidator/>
+            <MudStack Style="min-width: 500px;" Row="false" Spacing="0">
+                <MudTextField T="long" @bind-Value="App.Id" ReadOnly="true" Label="ID приложения"/>
+                <MudStack Class="mt-2" Row="true">
+                    <MudTextField T="string" @bind-Value="App.AccessToken" ReadOnly="true" Label="Ключ доступа"/>
+                    <MudButton Size="Size.Small" Color="Color.Info" Variant="Variant.Outlined" OnClick="@Generate">Генерировать</MudButton>
+                </MudStack>
+            </MudStack>
+            <MudStack Row="true" Class="mt-4" Justify="Justify.FlexEnd">
+                <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="@Cancel">Закрыть</MudButton>
+                <MudButton Color="Color.Info" Variant="Variant.Outlined" OnClick="@Save">Обновить</MudButton>
+            </MudStack>
+        </EditForm>
+    </DialogContent>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public App App { get; set; } = new App();
+
+    void Cancel()
+    {
+        MudDialog.Close();
+    }
+
+    private void Generate()
+    {
+        App.AccessToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
+    }
+
+    private async Task Save()
+    {
+        await AppsService.UpdateApp(App);
+        Cancel();
+    }
+
+}

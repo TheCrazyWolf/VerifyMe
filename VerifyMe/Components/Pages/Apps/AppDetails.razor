@@ -15,6 +15,7 @@
 
 <MudStack Row="true">
     <MudButton Class="mt-2"  Variant="Variant.Outlined"
+               OnClick="OpenModalToRevokeAccessToken"
                Color="Color.Info">Отозвать токен</MudButton>
     <MudButton Class="mt-2"  Variant="Variant.Outlined"
                OnClick="OpenModalToRemoveApp"
@@ -80,6 +81,14 @@
         var dialog = await DialogService.ShowAsync<AppRemove>("Удаление", parameters);
         await dialog.Result;
         NavigationManager.NavigateTo($"app/{_app?.Id}", true);
+    }
+    
+    private async Task OpenModalToRevokeAccessToken()
+    {
+        var parameters = new DialogParameters<AppRevokeAccessToken>();
+        parameters.Add("App", _app);
+        var dialog = await DialogService.ShowAsync<AppRevokeAccessToken>("Отозвать токен", parameters);
+        await dialog.Result;
     }
 
     private async Task<IList<Sms>> GetSmsByApp(long appId)
