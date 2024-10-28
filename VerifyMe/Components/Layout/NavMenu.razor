@@ -37,7 +37,7 @@
     private async Task OpenModalCreateApp()
     {
         var parameters = new DialogParameters<AppCreate>();
-        var dialog = await DialogService.ShowAsync<AppCreate>("Новое приложенмие", parameters);
+        var dialog = await DialogService.ShowAsync<AppCreate>("Новое приложение", parameters);
         await dialog.Result;
         NavigationManager.NavigateTo("/", true);
     }
