@@ -10,6 +10,7 @@ public class SmsService(VerifyStorage storage, ITelegramBotClient botClient)
 {
     public async Task<SmsResult> SendSmsAsync(App app, string phoneNumber, string message)
     {
+        phoneNumber = phoneNumber.GetNormalizedPhoneNumber();
         var user = await storage.Users.GetUserByPhone(phoneNumber);
         if (user == null) return new SmsResult(false, "Пользователь не зарегистрирован в сервисе");
         message += $"\n\nℹ️ Вы получили это сообщение от сервиса: ID №{app.Id}. {app.Name}";
