@@ -16,7 +16,7 @@ public class SmsService(VerifyStorage storage, ITelegramBotClient botClient)
         var isSuccess = await botClient.TrySendMessage(user.Id, message);
         Sms sms = new Sms { AppId = app.Id, UserId = user.Id, Message = message, IsDelivered  = isSuccess, DateTimeSend = DateTime.Now};
         await storage.Sms.CreateSms(sms);
-        return new SmsResult(true, "Сообщение отправлено");
+        return new SmsResult(isSuccess, isSuccess ? "Сообщение доставлено" : "Пользователь удалил бота или телеграмм недоступен");
     }
     
     public async Task SendSmsAsync(App app, IList<string> phoneNumbers, string message)
