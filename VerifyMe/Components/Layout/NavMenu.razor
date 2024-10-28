@@ -1,13 +1,34 @@
-﻿<MudPaper Style="background-color: #e3eaf2;" Width="300px" Elevation="0">
+﻿@using VerifyMe.Services.AppsServices
+@using App = VerifyMe.Models.DLA.App
+
+@inject AppsServices AppsServices;
+
+<MudPaper Style="background-color: #e3eaf2;" Width="300px" Elevation="0">
     <MudNavMenu Rounded="true" Margin="Margin.Dense" Class="pa-2">
         <MudNavLink Href="/index" Icon="@Icons.Material.Filled.Home">Главная</MudNavLink>
         <MudNavLink Href="/admin" Icon="@Icons.Material.Filled.Science">Админ панель</MudNavLink>
-        @*@foreach (var menu in _widgetMenus)
+        @foreach (var menu in _apps)
         {
-            <MudNavLink Href="@GetUrl(menu)" Match="NavLinkMatch.All"
+            <MudNavLink Href="@(GetUrlFromApp(menu))" Match="NavLinkMatch.All"
                         Icon="@Icons.Material.Filled.Code">
-                @menu.ShortPath
+                @menu.Name
             </MudNavLink>
-        }*@
+        }
     </MudNavMenu>
 </MudPaper>
+
+@code {
+
+    private IList<App> _apps = new List<App>();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _apps = await AppsServices.GetApps();
+    }
+
+    public string GetUrlFromApp(App app)
+    {
+        return $"/app/{app.Id}";
+    }
+
+}

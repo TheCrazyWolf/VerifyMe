@@ -30,4 +30,9 @@ public class AppsServices(VerifyStorage storage)
     {
         await storage.Apps.RemoveApp(app);
     }
+
+    public async Task<IList<App>> GetApps()
+    {
+        return await storage.Apps.GetApps();
+    }
 }
