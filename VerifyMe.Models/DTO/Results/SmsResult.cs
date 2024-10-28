@@ -1,4 +1,4 @@
-﻿namespace VerifyMe.Models.DTO;
+﻿namespace VerifyMe.Models.DTO.Results;
 
 public class SmsResult
 {

@@ -1,6 +1,7 @@
 ﻿using Telegram.Bot;
 using VerifyMe.Models.DLA;
 using VerifyMe.Models.DTO;
+using VerifyMe.Models.DTO.Results;
 using VerifyMe.Services.Extensions;
 using VerifyMe.Storage;
 

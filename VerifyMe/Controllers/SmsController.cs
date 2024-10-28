@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using VerifyMe.Models.DTO;
+using VerifyMe.Models.DTO.Results;
 using VerifyMe.Services.AppsServices;
 using VerifyMe.Services.SmsServices;
 
@@ -16,4 +17,6 @@ public class SmsController(SmsService smsService, AppsServices appsServices) : C
         if(application == null) return new SmsResult(false,"Доступ запрещен. Проверьте передачу токена в заголовке AccessToken");
         return await smsService.SendSmsAsync(application, dto.Phone, dto.Message);
     }
+    
+    
 }
