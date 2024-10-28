@@ -8,7 +8,11 @@ public class SmsRepository(VerifyContext ef)
 {
     public async Task<IList<Sms>> GetSmsByAppId(long appId)
     {
-        return await ef.Sms.Where(x => x.AppId == appId).ToListAsync();
+        return await ef.Sms
+            .Include(x=> x.User)
+            .Where(x => x.AppId == appId)
+            .OrderByDescending(x=> x.DateTimeSend)
+            .ToListAsync();
     }
 
     public async Task CreateSms(Sms sms)
