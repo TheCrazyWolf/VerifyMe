@@ -1,4 +1,9 @@
-﻿@inherits LayoutComponentBase
+﻿@using Blazored.LocalStorage
+@inherits LayoutComponentBase
+
+@inject IConfiguration Config;
+@inject ILocalStorageService Storage;
+@inject NavigationManager Navigation;
 
 <MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode"/>
 <MudPopoverProvider/>
@@ -38,7 +43,6 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-
         _theme = new()
         {
             PaletteLight = _lightPalette,
@@ -47,6 +51,17 @@
         };
     }
 
+    protected override Task OnInitializedAsync()
+    { 
+        RedirectIfUnAuth();
+        return Task.CompletedTask;
+    }
+    
+    protected async void RedirectIfUnAuth()
+    {
+        if (Config.GetValue<string>("AdminPasswordSecurity") != await Storage.GetItemAsync<string>("AdminPasswordSecurity"))
+            Navigation.NavigateTo("/login", true);
+    }
 
     private void DrawerToggle()
     {
