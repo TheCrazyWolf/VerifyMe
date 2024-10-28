@@ -1,0 +1,31 @@
+﻿@using VerifyMe.Models.DLA
+
+<MudDialog>
+    <DialogContent>
+        <EditForm Model="@Sms" >
+            <DataAnnotationsValidator/>
+            <MudStack Style="min-width: 500px;" Row="false" Spacing="0">
+                <MudTextField T="long" @bind-Value="Sms.Id" ReadOnly="true" Label="ID сообщения"/>
+                <MudTextField Class="mt-2" T="string" @bind-Value="Sms.User!.PhoneNumber" ReadOnly="true" Label="Номер телефона"/>
+                <MudTextField Class="mt-2" T="DateTime" @bind-Value="Sms.DateTimeSend" ReadOnly="true" Label="Дата-время отправки"/>
+                <MudTextField Class="mt-2" Lines="5" T="string" @bind-Value="Sms.Message" ReadOnly="true" Label="Текст сообщения"/>
+                <MudCheckBox T="bool"  @bind-Value="Sms.IsDelivered" ReadOnly="true" Label="Доставлено"/>
+            </MudStack>
+            <MudStack Row="true" Class="mt-4" Justify="Justify.FlexEnd">
+                <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="@Cancel">Закрыть</MudButton>
+            </MudStack>
+        </EditForm>
+    </DialogContent>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public Sms Sms { get; set; } = new Sms();
+
+    void Cancel()
+    {
+        MudDialog.Close();
+    }
+    
+}

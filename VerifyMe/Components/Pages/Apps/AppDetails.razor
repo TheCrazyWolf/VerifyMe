@@ -1,5 +1,6 @@
 ﻿@page "/app/{id:long}"
 
+@using VerifyMe.Components.Dialogs.Apps
 @using VerifyMe.Models.DLA
 @using VerifyMe.Services.AppsServices
 @using VerifyMe.Services.SmsServices
@@ -8,6 +9,7 @@
 @inject AppsServices AppServices
 @inject SmsService SmsServices
 @inject NavigationManager NavigationManager
+@inject IDialogService DialogService
 
 <h3>@_app?.Name</h3>
 
@@ -20,14 +22,20 @@
 
 <MudDataGrid Class="mt-5" T="Sms" Items="@_sms" >
     <Columns>
-        <PropertyColumn Property="x => x.Id" Title="ID сообщения" />
-        <PropertyColumn Property="x => x.User!.PhoneNumber" Title="Номер телефона" />
-        <PropertyColumn Property="x => x.DateTimeSend" Title="Дата-время отправки" />
-        <PropertyColumn Property="x => x.IsDelivered" Title="Доставлено" />
+        <PropertyColumn Property="x => x.Id" Sortable="true" Filterable="true"  Title="ID сообщения" />
+        <PropertyColumn Property="x => x.User!.PhoneNumber" Sortable="true" Filterable="true"  Title="Номер телефона" />
+        <PropertyColumn Property="x => x.DateTimeSend" Sortable="true" Filterable="true" Title="Дата-время отправки" />
+        <TemplateColumn Sortable="false" Filterable="true" Title="Доставлено">
+            <CellTemplate>
+                <MudStack Row>
+                    <p>@(context.Item.IsDelivered ? "да" : "нет")</p>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
         <TemplateColumn Sortable="false" Filterable="false" Title="Действия">
             <CellTemplate>
                 <MudStack Row>
-                    <MudButton OnClick="@(() => OpenModal(context.Item.Id))"
+                    <MudButton OnClick="@(() => OpenModal(context.Item))"
                                Size="@Size.Small"
                                Variant="@Variant.Outlined"
                                Color="@Color.Info">
@@ -56,9 +64,12 @@
         _sms = await GetSmsByApp(_app!.Id);
     }
 
-    private Task OpenModal(long itemId)
+    private async Task OpenModal(Sms sms)
     {
-        throw new NotImplementedException();
+        var parameters = new DialogParameters<SmsView>();
+        parameters.Add("Sms", sms);
+        var dialog = await DialogService.ShowAsync<SmsView>("Просмотр сообшения", parameters);
+        await dialog.Result;
     }
 
     private async Task<IList<Sms>> GetSmsByApp(long appId)
