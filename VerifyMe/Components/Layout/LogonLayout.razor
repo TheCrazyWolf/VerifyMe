@@ -9,7 +9,7 @@
 <MudLayout Style="background-color: #e3eaf2;">
     <MudAppBar Style="background-color: #e3eaf2;" Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
-        <MudText Typo="Typo.subtitle1" Color="Color.Dark" Class="ml-3">VerifyMe .NET</MudText>
+        <MudText Typo="Typo.subtitle1" Color="Color.Dark" Class="ml-3">VerifyMe</MudText>
         <MudSpacer/>
     </MudAppBar>
     <MudDrawer Style="background-color: #e3eaf2;" @bind-Open="_drawerOpen"
@@ -17,7 +17,7 @@
                ClipMode="DrawerClipMode.Always" Elevation="0">
         <MudPaper Style="background-color: #e3eaf2;" Width="300px" Elevation="0">
             <MudNavMenu Rounded="true" Margin="Margin.Dense" Class="pa-2">
-                <MudNavLink Href="/page/logon" Icon="@Icons.Material.Filled.Key">Авторизация</MudNavLink>
+                <MudNavLink Href="/login" Icon="@Icons.Material.Filled.Key">Авторизация</MudNavLink>
             </MudNavMenu>
         </MudPaper>
     </MudDrawer>

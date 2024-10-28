@@ -13,17 +13,23 @@
 <MudLayout Style="background-color: #e3eaf2;">
     <MudAppBar Style="background-color: #e3eaf2;" Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
-        <MudText Typo="Typo.subtitle1" Color="Color.Dark" Class="ml-3">VerifyMe .NET</MudText>
+        <MudText Typo="Typo.subtitle1" Color="Color.Dark" Class="ml-3">VerifyMe</MudText>
         <MudSpacer/>
     </MudAppBar>
     <MudDrawer Style="background-color: #e3eaf2;" @bind-Open="_drawerOpen"
                Width="300px"
                ClipMode="DrawerClipMode.Always" Elevation="0">
-        <NavMenu/>
+        @if (isAuthorized)
+        {
+            <NavMenu/>
+        }
     </MudDrawer>
     <MudMainContent>
         <MudPaper Style="overflow-y: scroll; padding: 15px; margin: 10px 20px 10px 20px; height: 88vh;">
-            @Body
+            @if (isAuthorized)
+            {
+                @Body
+            }
         </MudPaper>
     </MudMainContent>
 </MudLayout>
@@ -39,6 +45,7 @@
     private bool _drawerOpen = true;
     private bool _isDarkMode = false;
     private MudTheme? _theme = null;
+    private bool isAuthorized = false;
 
     protected override void OnInitialized()
     {
@@ -52,15 +59,21 @@
     }
 
     protected override Task OnInitializedAsync()
-    { 
+    {
         RedirectIfUnAuth();
         return Task.CompletedTask;
     }
-    
+
     protected async void RedirectIfUnAuth()
     {
         if (Config.GetValue<string>("AdminPasswordSecurity") != await Storage.GetItemAsync<string>("AdminPasswordSecurity"))
+        {
             Navigation.NavigateTo("/login", true);
+            return;
+        }
+
+        isAuthorized = true;
+        await InvokeAsync(StateHasChanged);
     }
 
     private void DrawerToggle()
