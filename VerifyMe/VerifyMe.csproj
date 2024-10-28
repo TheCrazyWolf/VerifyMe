@@ -16,4 +16,9 @@
     <ItemGroup>
       <ProjectReference Include="..\VerifyMe.Telegram\VerifyMe.Telegram.csproj" />
     </ItemGroup>
+
+
+    <ItemGroup>
+      <Folder Include="Components\Dialogs\" />
+    </ItemGroup>
 </Project>

@@ -27,4 +27,9 @@ public class SmsService(VerifyStorage storage, ITelegramBotClient botClient)
             await Task.Delay(10000);
         }
     }
+
+    public async Task<IList<Sms>> GetSmsByAppId(long appId)
+    {
+        return await storage.Sms.GetSmsByAppId(appId);
+    }
 }

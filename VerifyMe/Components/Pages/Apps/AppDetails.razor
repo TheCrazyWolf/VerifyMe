@@ -1,0 +1,69 @@
+﻿@page "/app/{id:long}"
+
+@using VerifyMe.Models.DLA
+@using VerifyMe.Services.AppsServices
+@using VerifyMe.Services.SmsServices
+@using App = VerifyMe.Models.DLA.App
+
+@inject AppsServices AppServices
+@inject SmsService SmsServices
+@inject NavigationManager NavigationManager
+
+<h3>@_app?.Name</h3>
+
+<MudStack Row="true">
+    <MudButton Class="mt-2"  Variant="Variant.Outlined"
+               Color="Color.Info">Отозвать токен</MudButton>
+    <MudButton Class="mt-2"  Variant="Variant.Outlined"
+               Color="Color.Error">Удалить приложение</MudButton>
+</MudStack>
+
+<MudDataGrid Class="mt-5" T="Sms" Items="@_sms" >
+    <Columns>
+        <PropertyColumn Property="x => x.Id" Title="ID сообщения" />
+        <PropertyColumn Property="x => x.User!.PhoneNumber" Title="Номер телефона" />
+        <PropertyColumn Property="x => x.DateTimeSend" Title="Дата-время отправки" />
+        <PropertyColumn Property="x => x.IsDelivered" Title="Доставлено" />
+        <TemplateColumn Sortable="false" Filterable="false" Title="Действия">
+            <CellTemplate>
+                <MudStack Row>
+                    <MudButton OnClick="@(() => OpenModal(context.Item.Id))"
+                               Size="@Size.Small"
+                               Variant="@Variant.Outlined"
+                               Color="@Color.Info">
+                        Просмотр
+                    </MudButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="Sms" />
+    </PagerContent>
+</MudDataGrid>
+
+@code {
+    
+    [Parameter] public long Id { get; set; }
+    private App? _app;
+    private IList<Sms> _sms = new List<Sms>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _app = await AppServices.GetAppAsync(Id);
+        if(_app is null) NavigationManager.NavigateTo("/");
+
+        _sms = await GetSmsByApp(_app!.Id);
+    }
+
+    private Task OpenModal(long itemId)
+    {
+        throw new NotImplementedException();
+    }
+
+    private async Task<IList<Sms>> GetSmsByApp(long appId)
+    {
+        return await SmsServices.GetSmsByAppId(appId);
+    }
+
+}
