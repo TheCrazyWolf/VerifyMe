@@ -4,7 +4,7 @@ namespace VerifyMe.Services.Extensions;
 
 public static class PhoneNormalizer
 {
-    public static string GetNormalizedPhoneNumber(string phoneNumber)
+    public static string GetNormalizedPhoneNumber(this string phoneNumber)
     {
         phoneNumber = Regex.Replace(phoneNumber, @"[^\d]", "");
         
