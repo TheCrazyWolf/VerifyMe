@@ -1,12 +1,15 @@
-﻿@using VerifyMe.Services.AppsServices
+﻿@using VerifyMe.Components.Dialogs.Apps
+@using VerifyMe.Services.AppsServices
 @using App = VerifyMe.Models.DLA.App
 
-@inject AppsServices AppsServices;
+@inject AppsServices AppsServices
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
 
 <MudPaper Style="background-color: #e3eaf2;" Width="300px" Elevation="0">
     <MudNavMenu Rounded="true" Margin="Margin.Dense" Class="pa-2">
         <MudNavLink Href="/index" Icon="@Icons.Material.Filled.Home">Главная</MudNavLink>
-        <MudNavLink Href="/admin" Icon="@Icons.Material.Filled.Science">Админ панель</MudNavLink>
+        <MudNavLink OnClick="OpenModalCreateApp" Icon="@Icons.Material.Filled.Science">Новое приложение</MudNavLink>
         @foreach (var menu in _apps)
         {
             <MudNavLink Href="@(GetUrlFromApp(menu))" Match="NavLinkMatch.All"
@@ -29,6 +32,14 @@
     public string GetUrlFromApp(App app)
     {
         return $"/app/{app.Id}";
+    }
+
+    private async Task OpenModalCreateApp()
+    {
+        var parameters = new DialogParameters<AppCreate>();
+        var dialog = await DialogService.ShowAsync<AppCreate>("Новое приложенмие", parameters);
+        await dialog.Result;
+        NavigationManager.NavigateTo("/", true);
     }
 
 }
