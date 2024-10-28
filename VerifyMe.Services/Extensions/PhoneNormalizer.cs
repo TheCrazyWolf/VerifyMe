@@ -8,7 +8,6 @@ public static class PhoneNormalizer
     {
         phoneNumber = Regex.Replace(phoneNumber, @"[^\d]", "");
         
-        // Заменяем первую цифру 8 на +7
         if (phoneNumber.StartsWith("8"))
             phoneNumber = "+7" + phoneNumber.Substring(1);
         else if (phoneNumber.StartsWith("7"))
