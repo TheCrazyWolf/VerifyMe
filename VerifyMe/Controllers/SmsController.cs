@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using VerifyMe.Models.DTO;
 using VerifyMe.Models.DTO.Results;
 using VerifyMe.Services.AppsServices;
