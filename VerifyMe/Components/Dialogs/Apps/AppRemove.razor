@@ -1,0 +1,32 @@
+﻿@using VerifyMe.Services.AppsServices
+
+@inject AppsServices AppsService
+
+<MudDialog>
+    <DialogContent>
+        <p>Следующие приложение будет удалено:</p>
+        <MudAlert Class="mt-2" Severity="Severity.Normal">@App.Name</MudAlert>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Error" OnClick="@Delete">Удалить</MudButton>
+        <MudButton OnClick="@Cancel">Закрыть</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public Models.DLA.App App { get; set; } = new ();
+    
+    void Cancel()
+    {
+        MudDialog.Close();
+    }
+
+    private async Task Delete()
+    {
+        await AppsService.RemoveApp(App);
+        Cancel();
+    }
+
+}

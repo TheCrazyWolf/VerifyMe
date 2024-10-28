@@ -17,6 +17,7 @@
     <MudButton Class="mt-2"  Variant="Variant.Outlined"
                Color="Color.Info">Отозвать токен</MudButton>
     <MudButton Class="mt-2"  Variant="Variant.Outlined"
+               OnClick="OpenModalToRemoveApp"
                Color="Color.Error">Удалить приложение</MudButton>
 </MudStack>
 
@@ -70,6 +71,15 @@
         parameters.Add("Sms", sms);
         var dialog = await DialogService.ShowAsync<SmsView>("Просмотр сообшения", parameters);
         await dialog.Result;
+    }
+    
+    private async Task OpenModalToRemoveApp()
+    {
+        var parameters = new DialogParameters<AppRemove>();
+        parameters.Add("App", _app);
+        var dialog = await DialogService.ShowAsync<AppRemove>("Удаление", parameters);
+        await dialog.Result;
+        NavigationManager.NavigateTo($"app/{_app?.Id}", true);
     }
 
     private async Task<IList<Sms>> GetSmsByApp(long appId)
