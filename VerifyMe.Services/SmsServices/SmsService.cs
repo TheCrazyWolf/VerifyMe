@@ -13,6 +13,7 @@ public class SmsService(VerifyStorage storage, ITelegramBotClient botClient)
         phoneNumber = phoneNumber.GetNormalizedPhoneNumber();
         var user = await storage.Users.GetUserByPhone(phoneNumber);
         if (user == null) return new SmsResult(false, "Пользователь не зарегистрирован в сервисе");
+        if (string.IsNullOrEmpty(message)) return new SmsResult(false, "Сообщение не может быть пустым");
         message += $"\n\nℹ️ Вы получили это сообщение от сервиса: {app.Name}";
         var isSuccess = await botClient.TrySendMessage(user.Id, message);
         Sms sms = new Sms { AppId = app.Id, UserId = user.Id, Message = message, IsDelivered  = isSuccess, DateTimeSend = DateTime.Now};
