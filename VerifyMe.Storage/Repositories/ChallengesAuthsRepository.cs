@@ -7,7 +7,7 @@ namespace VerifyMe.Storage.Repositories;
 
 public class ChallengesAuthsRepository(VerifyContext ef)
 {
-    public static readonly int DefaultLifeChallengeInSeconds = 28;
+    public static readonly int DefaultLifeChallengeInSeconds = 60;
     
     public async Task<ChallengeAuth?> GetChallengeById(string challengeId)
     {
