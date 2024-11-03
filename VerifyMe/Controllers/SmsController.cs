@@ -19,18 +19,16 @@ public class SmsController(SmsService smsService, AppsServices appsServices) : C
     [HttpPost("send")]
     public async Task<SmsResult> Send([FromHeader] string accessToken, [FromBody] PostSendSms dto)
     {
-        var application = await appsServices.GetAppByAccessTokenAsync(accessToken);
-        if(application == null) return new SmsResult(false,"Доступ запрещен. Проверьте передачу токена в заголовке AccessToken");
-        return await smsService.SendSmsAsync(application, dto.Phone, dto.Message);
+        var application = await appsServices.GetAppByAccessTokenAsync(accessToken: accessToken);
+        if(application == null) return new SmsResult(isSuccess: false, systemMessage: "Доступ запрещен. Проверьте передачу токена в заголовке AccessToken");
+        return await smsService.SendSmsAsync(app: application, phoneNumber: dto.Phone, message: dto.Message);
     }
     
     [HttpPost("sendMany")]
-    public async Task<IActionResult> SendMany([FromHeader] string accessToken, [FromBody] IList<PostSendSms> dto, 
-        CancellationToken cancellationToken)
+    public async Task<IList<SmsResultExtended>> SendMany([FromHeader] string accessToken, [FromBody] IList<PostSendSms> dto)
     {
-        var application = await appsServices.GetAppByAccessTokenAsync(accessToken);
-        if(application == null) return Ok(new SmsResult(false,"Доступ запрещен. Проверьте передачу токена в заголовке AccessToken"));
-        cancellationToken.ThrowIfCancellationRequested();
-        return Ok(await smsService.SendSmsAsync(application, dto));
+        var application = await appsServices.GetAppByAccessTokenAsync(accessToken: accessToken);
+        if (application == null) return new List<SmsResultExtended> { new ( isSuccess: false, phone: string.Empty, systemMessage: "Доступ запрещен. Проверьте передачу токена в заголовке AccessToken")};
+        return await smsService.SendSmsAsync(app: application, dtos: dto);
     }
 }
