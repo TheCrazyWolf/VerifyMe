@@ -4,16 +4,22 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using VerifyMe.Services.UsersServices;
+using VerifyMe.Telegram.CallBacks;
 using VerifyMe.Telegram.Commands;
 using VerifyMe.Telegram.Common;
 
 namespace VerifyMe.Telegram;
 
-public class UpdateHandler(ILogger<UpdateHandler> logger, UsersService usersService) : IUpdateHandler
+public class UpdateHandler(ILogger<UpdateHandler> logger, UsersService usersService, IServiceProvider serviceProvider) : IUpdateHandler
 {
     private IList<BaseCommand> _commands = new List<BaseCommand>()
     {
         new StartCommand()
+    };
+    
+    private IList<BaseCallBackQuery> _callBackQueries = new List<BaseCallBackQuery>()
+    {
+        new ChallengeCallBack(serviceProvider)
     };
     
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
@@ -41,7 +47,16 @@ public class UpdateHandler(ILogger<UpdateHandler> logger, UsersService usersServ
                 break;
             }
             
-            
+            case UpdateType.CallbackQuery when update.CallbackQuery is not null:
+                foreach (var callBackQuery in _callBackQueries)
+                {
+                    if(!callBackQuery.Contains(update.CallbackQuery))
+                        continue;
+                    
+                    logger.LogInformation($"Обработка команды: {callBackQuery.Name}. от: ID {update.CallbackQuery.From.Id}");
+                    await callBackQuery.Execute(botClient, update.CallbackQuery);
+                }
+                break;
             case UpdateType.Unknown:
             case UpdateType.InlineQuery:
             case UpdateType.ChosenInlineResult:

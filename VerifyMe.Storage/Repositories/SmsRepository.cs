@@ -9,6 +9,7 @@ public class SmsRepository(VerifyContext ef)
     public async Task<IList<Sms>> GetSmsByAppId(long appId)
     {
         return await ef.Sms
+            .AsNoTracking()
             .Include(x=> x.User)
             .Where(x => x.AppId == appId)
             .OrderByDescending(x=> x.DateTimeSend)

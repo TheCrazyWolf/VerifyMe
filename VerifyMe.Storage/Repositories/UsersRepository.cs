@@ -8,7 +8,7 @@ public class UsersRepository(VerifyContext ef)
 {
     public async Task<User?> GetUserByPhone(string phone)
     {
-        return await ef.Users.FirstOrDefaultAsync(x=> x.PhoneNumber == phone);
+        return await ef.Users.AsNoTracking().FirstOrDefaultAsync(x=> x.PhoneNumber == phone);
     }
 
     public async Task AddUser(User user)

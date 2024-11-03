@@ -21,11 +21,11 @@ public static class TelegramUtils
     }
     
     public static async Task<bool> TryEditMessage(this ITelegramBotClient client,
-        long chatId, int messageIdm, string message, IReplyMarkup? replyMarkup = null)
+        long chatId, int messageId, string message, IReplyMarkup? replyMarkup = null)
     {
         try
         {
-            await client.EditMessageTextAsync(chatId: chatId, messageId: messageIdm, message,
+            await client.EditMessageTextAsync(chatId: chatId, messageId: messageId, message,
                 replyMarkup: replyMarkup as InlineKeyboardMarkup,
                 parseMode: ParseMode.Html);
             return true;

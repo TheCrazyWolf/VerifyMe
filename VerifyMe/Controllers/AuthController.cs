@@ -19,7 +19,7 @@ public class AuthController(SmsService smsService, AppsServices appsServices, Au
         if (user == null) return new ChallengeAuthResult(isSuccess: false, systemMessage: "Пользователь не зарегистрирован в телеграм-боте");        
         await authService.RejectInActiveChallenges();
         var challengeAuth = await authService.CreateChallengeAuth(application, user);
-        var smsResult = await smsService.SendSmsRequestAuth(application, challengeAuth);
+        var smsResult = await smsService.SendSmsRequestAuth(application, challengeAuth, user);
         if (!smsResult.IsSuccess) return new ChallengeAuthResult(isSuccess: smsResult.IsSuccess, systemMessage: smsResult.SystemMessage); 
         return await authService.WaitResultOfChallenge(challengeAuth, 60);
     }

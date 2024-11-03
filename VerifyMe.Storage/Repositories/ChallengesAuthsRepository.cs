@@ -12,15 +12,18 @@ public class ChallengesAuthsRepository(VerifyContext ef)
     public async Task<ChallengeAuth?> GetChallengeById(string challengeId)
     {
         return await ef.ChallengeAuths
+            .AsNoTracking()
             .Include(x=> x.User)
-            .FirstOrDefaultAsync(x => x.Id.ToString() == challengeId);
+            .Include(x=> x.Application)
+            .FirstOrDefaultAsync(x => x.Id == challengeId);
     }
 
     public async Task<IList<ChallengeAuth>> GetChallengesWithUnknownStatus()
     {
         return await ef.ChallengeAuths
+            .AsNoTracking()
             .Where(x => x.Status == ChallengeStatus.Unknown)
-            .Where(x => x.Created >= DateTime.Now.AddMinutes(-DefaultLifeChallengeInMinute))
+            .Where(x => x.Created >= DateTime.Now.AddMinutes(DefaultLifeChallengeInMinute))
             .ToListAsync();
     }
 

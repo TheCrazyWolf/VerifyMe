@@ -8,12 +8,12 @@ public class AppRepository(VerifyContext ef)
 {
     public async Task<IList<App>> GetApps()
     {
-        return await ef.Apps.ToListAsync();
+        return await ef.Apps.AsNoTracking().ToListAsync();
     }
 
     public async Task<App?> GetAppById(long id)
     {
-        return await ef.Apps.FirstOrDefaultAsync(x => x.Id == id);
+        return await ef.Apps.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task CreateApp(App newApp)
@@ -36,6 +36,6 @@ public class AppRepository(VerifyContext ef)
 
     public async Task<App?> GetAppByAccessToken(string accessToken)
     {
-        return await ef.Apps.FirstOrDefaultAsync(x => x.AccessToken == accessToken);
+        return await ef.Apps.AsNoTracking().FirstOrDefaultAsync(x => x.AccessToken == accessToken);
     }
 }

@@ -42,9 +42,9 @@ public class SmsService(VerifyStorage storage, ITelegramBotClient botClient)
         return await storage.Sms.GetSmsByAppId(appId);
     }
 
-    public async Task<SmsResult> SendSmsRequestAuth(App app, ChallengeAuth challengeAuth)
+    public async Task<SmsResult> SendSmsRequestAuth(App app, ChallengeAuth challengeAuth, User user)
     {
-        return await SendSmsAsync(app: app, phoneNumber: challengeAuth.User?.PhoneNumber ?? string.Empty, 
+        return await SendSmsAsync(app: app, phoneNumber: user.PhoneNumber, 
             message: $"Получен запрос на авторизацию через сервис: {app.Name}. \n\nЭтому сервису будут доступны следующие данные: Никнейм, Фамилия, Имя, Номер телефона.",
             replyMarkup: new InlineKeyboardMarkup(GenerateKeyboard(challengeAuth)));
     }
@@ -56,9 +56,9 @@ public class SmsService(VerifyStorage storage, ITelegramBotClient botClient)
             new List<InlineKeyboardButton>
             {
                 InlineKeyboardButton.WithCallbackData("❌ Отклонить",
-                    $"challenge_auth {challengeAuth} {nameof(ChallengeStatus.Rejected)}"),
+                    $"challenge_auth {challengeAuth.Id} {nameof(ChallengeStatus.Rejected)}"),
                 InlineKeyboardButton.WithCallbackData("✅ Авторизоваться",
-                    $"challenge_auth {challengeAuth} {nameof(ChallengeStatus.Accept)}"),
+                    $"challenge_auth {challengeAuth.Id} {nameof(ChallengeStatus.Accept)}"),
             },
         };
     }

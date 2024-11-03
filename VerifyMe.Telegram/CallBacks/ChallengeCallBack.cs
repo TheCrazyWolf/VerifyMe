@@ -1,34 +1,35 @@
-﻿using Telegram.Bot;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
+using VerifyMe.Models.Enums;
+using VerifyMe.Services.AuthServices;
+using VerifyMe.Storage;
+using VerifyMe.Storage.Context;
 using VerifyMe.Telegram.Common;
+using VerifyMe.Telegram.Extensions;
 
 namespace VerifyMe.Telegram.CallBacks;
 
-public class ChallengeCallBack : BaseCallBackQuery
+public class ChallengeCallBack(IServiceProvider serviceProvider) : BaseCallBackQuery
 {
     public override string Name { get; set; } = "challenge_auth";
     
-    public override void Execute(ITelegramBotClient client, CallbackQuery callbackQuery)
+    public override async Task Execute(ITelegramBotClient client, CallbackQuery callbackQuery)
     {
         var array = TryGetArrayFromCallBack(callbackQuery);
-        
-        
-        
-        /*// example: schedule <type> <value> <date>
-        if (callbackQuery.Message is null || array is null || array.Length == 0 ||
-            !Enum.TryParse<ScheduleSearchType>(array[0], out var searchType) || !DateTime.TryParse(array[2], out var date))
+
+        if (callbackQuery.Message is null || array is null ||
+            !Enum.TryParse<ChallengeStatus>(array[1], out var challengeStatus))
         {
-            if (callbackQuery.Message != null)
-                await client.EditMessageReplyMarkupAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId,
-                    replyMarkup: null);
             return;
         }
         
-        var result = await clientSamgk.Schedule.GetScheduleAsync(DateOnly.FromDateTime(date), 
-            searchType, array[1]);
-        
-        await client.TryEditMessage(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId, 
-            result.GetStringFromRasp(),
-            replyMarkup: new InlineKeyboardMarkup(result.GenerateKeyboardOnSchedule(searchType, array[1])));*/
+        /*var authService = serviceProvider.GetService<AuthService>(); if(authService is null) return;*/
+        var authService = new AuthService(new VerifyStorage(new VerifyContext()));
+        var result = await authService.UpdateChallengeFromCallbackData(array[0], challengeStatus);
+
+        await client.TryEditMessage(chatId: callbackQuery.Message.Chat.Id, messageId: callbackQuery.Message.MessageId,
+            message: result.SystemMessage, new ReplyKeyboardRemove());
     }
 }

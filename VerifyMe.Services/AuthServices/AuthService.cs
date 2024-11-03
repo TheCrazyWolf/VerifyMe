@@ -19,9 +19,7 @@ public class AuthService(VerifyStorage storage)
     {
         var challenge = new ChallengeAuth()
         {
-            User = user,
             UserId = user.Id,
-            Application = application,
             ApplicationId = application.Id,
             Created = DateTime.Now,
             Status = ChallengeStatus.Unknown,
@@ -46,7 +44,7 @@ public class AuthService(VerifyStorage storage)
     {
         for (int i = 0; i < attempts; i++)
         {
-            var actualChallenge = await storage.ChallengesAuths.GetChallengeById(challengeAuth.Id.ToString());
+            var actualChallenge = await storage.ChallengesAuths.GetChallengeById(challengeAuth.Id);
             if(actualChallenge is null) return new ChallengeAuthResult(false, "ChallengeId not found");
 
             switch (actualChallenge.Status)
@@ -71,10 +69,10 @@ public class AuthService(VerifyStorage storage)
     {
         await RejectInActiveChallenges();
         var challenge = await storage.ChallengesAuths.GetChallengeById(challengeId);
-        if(challenge is null) return new ChallengeAuthResult(false, "ChallengeId not found");
-        if(challenge.Status is ChallengeStatus.Accept or ChallengeStatus.Rejected) return new ChallengeAuthResult(false, "Уже обработано"); 
+        if (challenge is null) return new ChallengeAuthResult(false, $"ChallengeId #({challengeId}) not found");
+        if(challenge.Status is ChallengeStatus.Accept or ChallengeStatus.Rejected) return new ChallengeAuthResult(false, "Время подтверждения истекло"); 
         challenge.Status = newStatus;
         await storage.ChallengesAuths.UpdateChallenge(challenge);
-        return new ChallengeAuthResult(true, "Успешная авторизация");
+        return new ChallengeAuthResult(true, newStatus is ChallengeStatus.Accept ? $"Успешная авторизация в сервисе {challenge.Application?.Name}" : "Запрос на авторизацию отклонен");
     }
 }
