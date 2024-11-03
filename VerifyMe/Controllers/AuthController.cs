@@ -3,6 +3,7 @@ using VerifyMe.Models.DTO.ChallengeAuth;
 using VerifyMe.Services.AppsServices;
 using VerifyMe.Services.AuthServices;
 using VerifyMe.Services.SmsServices;
+using VerifyMe.Storage.Repositories;
 
 namespace VerifyMe.Controllers;
 
@@ -21,7 +22,7 @@ public class AuthController(SmsService smsService, AppsServices appsServices, Au
         var challengeAuth = await authService.CreateChallengeAuth(application, user);
         var smsResult = await smsService.SendSmsRequestAuth(application, challengeAuth, user);
         if (!smsResult.IsSuccess) return new ChallengeAuthResult(isSuccess: smsResult.IsSuccess, systemMessage: smsResult.SystemMessage); 
-        return await authService.WaitResultOfChallenge(challengeAuth, 28);
+        return await authService.WaitResultOfChallenge(challengeAuth, ChallengesAuthsRepository.DefaultLifeChallengeInSeconds);
     }
     
     [HttpGet("Auth")]

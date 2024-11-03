@@ -7,7 +7,7 @@ namespace VerifyMe.Storage.Repositories;
 
 public class ChallengesAuthsRepository(VerifyContext ef)
 {
-    public static readonly int DefaultLifeChallengeInMinute = 1;
+    public static readonly int DefaultLifeChallengeInSeconds = 28;
     
     public async Task<ChallengeAuth?> GetChallengeById(string challengeId)
     {
@@ -23,7 +23,7 @@ public class ChallengesAuthsRepository(VerifyContext ef)
         return await ef.ChallengeAuths
             .AsNoTracking()
             .Where(x => x.Status == ChallengeStatus.Unknown)
-            .Where(x => x.Created >= DateTime.Now.AddMinutes(DefaultLifeChallengeInMinute))
+            .Where(x => DateTime.Now >= x.Created.AddSeconds(DefaultLifeChallengeInSeconds))
             .ToListAsync();
     }
 
