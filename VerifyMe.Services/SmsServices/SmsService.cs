@@ -45,7 +45,7 @@ public class SmsService(VerifyStorage storage, ITelegramBotClient botClient)
     public async Task<SmsResult> SendSmsRequestAuth(App app, ChallengeAuth challengeAuth, User user)
     {
         return await SendSmsAsync(app: app, phoneNumber: user.PhoneNumber, 
-            message: $"Получен запрос на авторизацию через сервис: {app.Name}. \n\nЭтому сервису будут доступны следующие данные: Никнейм, Фамилия, Имя, Номер телефона.",
+            message: $"Получен запрос на авторизацию через сервис: {app.Name}. \n\nЭтому сервису будут доступны следующие данные: \n• Никнейм\n• Имя\n• Фамилия\n• Номер телефона",
             replyMarkup: new InlineKeyboardMarkup(GenerateKeyboard(challengeAuth)));
     }
     
