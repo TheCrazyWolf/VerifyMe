@@ -53,6 +53,7 @@
 </MudDataGrid>
 
 @code {
+#pragma warning disable BL0007 
     
     private long _id = 0;
 
@@ -66,6 +67,8 @@
             _ = OnInitializedAsync();
         }
     }
+    
+#pragma warning restore BL0007 
     
     private App? _app;
     private IList<Sms> _sms = new List<Sms>();
