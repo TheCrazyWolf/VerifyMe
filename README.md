@@ -102,3 +102,15 @@ if (challengeAuthResult is not null)
     }
 }
 ```
+### Добавление сервиса в DI
+```csharp
+builder.Services.AddScoped<VerifyApi>(opt =>
+{
+    var config = opt.GetRequiredService<IConfiguration>();
+    var url = config.GetValue<string>("VerifyMe:ApiUrl");
+    var key = config.GetValue<string>("VerifyMe:ApiKey");
+    ArgumentNullException.ThrowIfNull(url, "VerifyMe:ApiUrl");
+    ArgumentNullException.ThrowIfNull(key, "VerifyMe:ApiKey");
+    return new VerifyApi(url: url, applicationToken: key);
+});
+```
