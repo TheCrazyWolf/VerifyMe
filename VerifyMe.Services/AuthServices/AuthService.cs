@@ -67,6 +67,7 @@ public class AuthService(VerifyStorage storage)
     public async Task<ChallengeAuthResult> UpdateChallengeFromCallbackData(string challengeId,
         ChallengeStatus newStatus)
     {
+        await RejectInActiveChallenges();
         var challenge = await storage.ChallengesAuths.GetChallengeById(challengeId);
         if (challenge is null) return new ChallengeAuthResult(false, $"ChallengeId #({challengeId}) not found");
         if(challenge.Status is ChallengeStatus.Accept or ChallengeStatus.Rejected) return new ChallengeAuthResult(false, "⚠️ Время подтверждения истекло"); 
