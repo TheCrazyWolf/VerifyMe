@@ -51,7 +51,7 @@ public class AuthService(VerifyStorage storage)
             {
                 case ChallengeStatus.Accept when actualChallenge.User is not null:
                     return new ChallengeAuthResult(true, "Успешная авторизация", 
-                        new DetailsUser(telegramId:actualChallenge.User.Id, username:"", firstName:"", lastName:"",
+                        new DetailsUser(telegramId:actualChallenge.User.Id, username: actualChallenge.User.UserName, firstName: actualChallenge.User.FirstName, lastName: actualChallenge.User.LastName,
                             phone: actualChallenge.User.PhoneNumber));
                 case ChallengeStatus.Rejected:
                     return new ChallengeAuthResult(false, "Пользователь не принял авторизацию");

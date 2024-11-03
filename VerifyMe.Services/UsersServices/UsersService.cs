@@ -12,10 +12,16 @@ public class UsersService(VerifyStorage storage)
         if (userFromStorage is null)
         {
             user.DateTimeRegister = DateTime.Now;
+            user.FirstName = user.FirstName;
+            user.LastName = user.LastName;
+            user.UserName = user.UserName;
             await storage.Users.AddUser(user);
             return;
         }
         userFromStorage.Id = user.Id;
+        userFromStorage.FirstName = user.FirstName;
+        userFromStorage.LastName = user.LastName;
+        userFromStorage.UserName = user.UserName;
         userFromStorage.PhoneNumber = user.PhoneNumber;
         await storage.Users.UpdateUser(userFromStorage);
     }

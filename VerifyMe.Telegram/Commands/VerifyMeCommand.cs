@@ -25,11 +25,12 @@ public class VerifyMeCommand(UsersService usersService) : BaseCommand
             await client.TrySendMessage(message.Chat.Id, _unSuccessVerifyed, replyMarkup: new ReplyKeyboardRemove());
             return;
         }
-
+        
         if (message.Contact != null)
         {
             await usersService.AddOrUpdate(new User()
-                { Id = message.Contact.UserId ?? 0, PhoneNumber = message.Contact.PhoneNumber });
+                { Id = message.Contact.UserId ?? 0, PhoneNumber = message.Contact.PhoneNumber,UserName = message.From?.Username ?? string.Empty,
+                    FirstName = message.Contact.FirstName, LastName = message.Contact.LastName ?? string.Empty });
             
             await client.TrySendMessage(message.Chat.Id, _successVerifyed, replyMarkup: new ReplyKeyboardRemove());
         }
