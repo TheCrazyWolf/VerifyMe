@@ -9,7 +9,7 @@ public class AuthService(string url, string applicationToken) : VerifyBase(url, 
 {
     private readonly string route = "/api/auth";
     
-    public async Task<ChallengeAuthResult?> SendSmsAsync(DtoPhoneAuth dto)
+    public async Task<ChallengeAuthResult?> Auth(DtoPhoneAuth dto)
     {
         var options = new RestRequest($"{route}/auth", Method.Post);
         options.AddOrUpdateHeader("accessToken", applicationToken);

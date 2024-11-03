@@ -7,4 +7,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\VerifyMe.ApiClient\VerifyMe.ApiClient.csproj" />
+    </ItemGroup>
+
 </Project>

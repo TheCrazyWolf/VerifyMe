@@ -11,7 +11,7 @@ public class SmsService(string url, string applicationToken) : VerifyBase(url, a
     
     public async Task<SmsResult?> SendSmsAsync(SendSms dto)
     {
-        var options = new RestRequest($"{route}/sms", Method.Post);
+        var options = new RestRequest($"{route}/send", Method.Post);
         options.AddOrUpdateHeader("accessToken", applicationToken);
         options.AddBody(dto);
         return await Client.PostAsync<SmsResult>(options);
