@@ -15,7 +15,7 @@ public class ChallengeCallBack(IServiceProvider serviceProvider) : BaseCallBackQ
 {
     public override string Name { get; set; } = "challenge_auth";
     
-    public override async Task Execute(ITelegramBotClient client, CallbackQuery callbackQuery)
+    public override async Task ExecuteAsync(ITelegramBotClient client, CallbackQuery callbackQuery)
     {
         var array = TryGetArrayFromCallBack(callbackQuery);
 
@@ -26,7 +26,7 @@ public class ChallengeCallBack(IServiceProvider serviceProvider) : BaseCallBackQ
         }
         
         var authService = serviceProvider.GetService<AuthService>(); if(authService is null) return;
-        var result = await authService.UpdateChallengeFromCallbackData(array[0], challengeStatus);
+        var result = await authService.UpdateChallengeFromCallbackDataAsync(array[0], challengeStatus);
 
         await client.TryEditMessage(chatId: callbackQuery.Message.Chat.Id, messageId: callbackQuery.Message.MessageId,
             message: result.SystemMessage, new ReplyKeyboardRemove());

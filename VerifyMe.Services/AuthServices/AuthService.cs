@@ -10,12 +10,12 @@ namespace VerifyMe.Services.AuthServices;
 
 public class AuthService(VerifyStorage storage)
 {
-    public async Task<User?> GetUserByPhoneNumber(string dtoPhone)
+    public async Task<User?> GetUserByPhoneNumberAsync(string dtoPhone)
     {
-        return await storage.Users.GetUserByPhone(dtoPhone.GetNormalizedPhoneNumber());
+        return await storage.Users.GetUserByPhoneAsync(dtoPhone.GetNormalizedPhoneNumber());
     }
 
-    public async Task<ChallengeAuth> CreateChallengeAuth(App application, User user)
+    public async Task<ChallengeAuth> CreateChallengeAuthAsync(App application, User user)
     {
         var challenge = new ChallengeAuth()
         {
@@ -25,26 +25,26 @@ public class AuthService(VerifyStorage storage)
             Status = ChallengeStatus.Unknown,
         };
         
-        await storage.ChallengesAuths.CreateChallenge(challenge);
+        await storage.ChallengesAuths.CreateChallengeAsync(challenge);
         return challenge;
     }
 
-    public async Task RejectInActiveChallenges()
+    public async Task RejectInActiveChallengesAsync()
     {
-        var challenges = await storage.ChallengesAuths.GetChallengesWithUnknownStatus();
+        var challenges = await storage.ChallengesAuths.GetChallengesWithUnknownStatusAsync();
 
         foreach (var challenge in challenges)
         {
             challenge.Status = ChallengeStatus.Rejected;
-            await storage.ChallengesAuths.UpdateChallenge(challenge);
+            await storage.ChallengesAuths.UpdateChallengeAsync(challenge);
         }
     }
 
-    public async Task<ChallengeAuthResult> WaitResultOfChallenge(ChallengeAuth challengeAuth, int attempts)
+    public async Task<ChallengeAuthResult> WaitResultOfChallengeAsync(ChallengeAuth challengeAuth, int attempts)
     {
         for (int i = 0; i < attempts; i++)
         {
-            var actualChallenge = await storage.ChallengesAuths.GetChallengeById(challengeAuth.Id);
+            var actualChallenge = await storage.ChallengesAuths.GetChallengeByIdAsync(challengeAuth.Id);
             if(actualChallenge is null) return new ChallengeAuthResult(false, $"ChallengeId {challengeAuth.Id} not found");
 
             switch (actualChallenge.Status)
@@ -64,15 +64,15 @@ public class AuthService(VerifyStorage storage)
         return new ChallengeAuthResult(false, "Пользователь не принял авторизацию");
     }
 
-    public async Task<ChallengeAuthResult> UpdateChallengeFromCallbackData(string challengeId,
+    public async Task<ChallengeAuthResult> UpdateChallengeFromCallbackDataAsync(string challengeId,
         ChallengeStatus newStatus)
     {
-        await RejectInActiveChallenges();
-        var challenge = await storage.ChallengesAuths.GetChallengeById(challengeId);
+        await RejectInActiveChallengesAsync();
+        var challenge = await storage.ChallengesAuths.GetChallengeByIdAsync(challengeId);
         if (challenge is null) return new ChallengeAuthResult(false, $"ChallengeId #({challengeId}) not found");
         if(challenge.Status is ChallengeStatus.Accept or ChallengeStatus.Rejected) return new ChallengeAuthResult(false, "⚠️ Время подтверждения истекло"); 
         challenge.Status = newStatus;
-        await storage.ChallengesAuths.UpdateChallenge(challenge);
+        await storage.ChallengesAuths.UpdateChallengeAsync(challenge);
         return new ChallengeAuthResult(true, newStatus is ChallengeStatus.Accept ? $"✅ Успешная авторизация в сервисе: <b>{challenge.Application?.Name}</b>" : $"⚠️ Запрос на авторизацию отклонен в сервисе: <b>{challenge.Application?.Name} </b>");
     }
 }

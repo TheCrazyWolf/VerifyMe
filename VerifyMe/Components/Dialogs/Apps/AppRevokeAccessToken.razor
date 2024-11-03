@@ -38,7 +38,7 @@
 
     private async Task Save()
     {
-        await AppsService.UpdateApp(App);
+        await AppsService.UpdateAppAsync(App);
         Cancel();
     }
 

@@ -25,7 +25,7 @@
 
     private async Task Delete()
     {
-        await AppsService.RemoveApp(App);
+        await AppsService.RemoveAppAsync(App);
         Cancel();
     }
 

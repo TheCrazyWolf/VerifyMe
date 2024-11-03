@@ -14,13 +14,13 @@ public class SmsService(VerifyStorage storage, ITelegramBotClient botClient)
     public async Task<SmsResult> SendSmsAsync(App app, string phoneNumber, string message, IReplyMarkup? replyMarkup = null)
     {
         phoneNumber = phoneNumber.GetNormalizedPhoneNumber();
-        var user = await storage.Users.GetUserByPhone(phoneNumber);
+        var user = await storage.Users.GetUserByPhoneAsync(phoneNumber);
         if (user == null) return new SmsResult(false, "Не удалось отправить сообщение. Пожалуйста перейдите, в телеграм бота и подтвердите свой номер телефона для получение смс-кодов.");
         if (string.IsNullOrEmpty(message)) return new SmsResult(false, "Сообщение не может быть пустым");
         message += $"\n\nℹ️ Вы получили это сообщение от сервиса: {app.Name}";
-        var isSuccess = await botClient.TrySendMessage(user.Id, message, replyMarkup: replyMarkup);
+        var isSuccess = await botClient.TrySendMessageAsync(user.Id, message, replyMarkup: replyMarkup);
         Sms sms = new Sms { AppId = app.Id, UserId = user.Id, Message = message, IsDelivered  = isSuccess, DateTimeSend = DateTime.Now};
-        await storage.Sms.CreateSms(sms);
+        await storage.Sms.CreateSmsAsync(sms);
         return new SmsResult(isSuccess, isSuccess ? "Сообщение успешно отправлено" : "Не удалость отправить сообщение. Пользователь деактивировал телеграм бота или проблемы с доступом к телеграму.");
     }
     
@@ -37,12 +37,12 @@ public class SmsService(VerifyStorage storage, ITelegramBotClient botClient)
         return resultExtendeds;
     }
 
-    public async Task<IList<Sms>> GetSmsByAppId(long appId)
+    public async Task<IList<Sms>> GetSmsByAppIdAsync(long appId)
     {
-        return await storage.Sms.GetSmsByAppId(appId);
+        return await storage.Sms.GetSmsByAppIdAsync(appId);
     }
 
-    public async Task<SmsResult> SendSmsRequestAuth(App app, ChallengeAuth challengeAuth, User user)
+    public async Task<SmsResult> SendSmsRequestAuthAsync(App app, ChallengeAuth challengeAuth, User user)
     {
         return await SendSmsAsync(app: app, phoneNumber: user.PhoneNumber, 
             message: $"Получен запрос на авторизацию через сервис: {app.Name}. \n\nЭтому сервису будут доступны следующие данные: \n• Никнейм\n• Имя\n• Фамилия\n• Номер телефона",

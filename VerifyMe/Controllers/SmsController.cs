@@ -19,7 +19,7 @@ public class SmsController(SmsService smsService, AppsServices appsServices) : C
     [HttpPost("send")]
     public async Task<SmsResult> Send([FromHeader] string accessToken, [FromBody] PostSendSms dto)
     {
-        var application = await appsServices.GetAppByAccessToken(accessToken);
+        var application = await appsServices.GetAppByAccessTokenAsync(accessToken);
         if(application == null) return new SmsResult(false,"Доступ запрещен. Проверьте передачу токена в заголовке AccessToken");
         return await smsService.SendSmsAsync(application, dto.Phone, dto.Message);
     }
@@ -28,7 +28,7 @@ public class SmsController(SmsService smsService, AppsServices appsServices) : C
     public async Task<IActionResult> SendMany([FromHeader] string accessToken, [FromBody] IList<PostSendSms> dto, 
         CancellationToken cancellationToken)
     {
-        var application = await appsServices.GetAppByAccessToken(accessToken);
+        var application = await appsServices.GetAppByAccessTokenAsync(accessToken);
         if(application == null) return Ok(new SmsResult(false,"Доступ запрещен. Проверьте передачу токена в заголовке AccessToken"));
         cancellationToken.ThrowIfCancellationRequested();
         return Ok(await smsService.SendSmsAsync(application, dto));

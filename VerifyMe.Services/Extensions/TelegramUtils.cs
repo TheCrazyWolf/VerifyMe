@@ -6,7 +6,7 @@ namespace VerifyMe.Services.Extensions;
 
 public static class TelegramUtils
 {
-    public static async Task<bool> TrySendMessage(this ITelegramBotClient client, long chatId, string message,
+    public static async Task<bool> TrySendMessageAsync(this ITelegramBotClient client, long chatId, string message,
         IReplyMarkup? replyMarkup = null)
     {
         try

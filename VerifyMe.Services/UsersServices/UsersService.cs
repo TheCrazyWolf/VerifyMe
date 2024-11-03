@@ -5,9 +5,9 @@ namespace VerifyMe.Services.UsersServices;
 
 public class UsersService(VerifyStorage storage)
 {
-    public async Task AddOrUpdate(User user)
+    public async Task AddOrUpdateAsync(User user)
     {
-        var userFromStorage = await storage.Users.GetUserByPhone(user.PhoneNumber);
+        var userFromStorage = await storage.Users.GetUserByPhoneAsync(user.PhoneNumber);
 
         if (userFromStorage is null)
         {
@@ -15,7 +15,7 @@ public class UsersService(VerifyStorage storage)
             user.FirstName = user.FirstName;
             user.LastName = user.LastName;
             user.UserName = user.UserName;
-            await storage.Users.AddUser(user);
+            await storage.Users.AddUserAsync(user);
             return;
         }
         userFromStorage.Id = user.Id;
@@ -23,6 +23,6 @@ public class UsersService(VerifyStorage storage)
         userFromStorage.LastName = user.LastName;
         userFromStorage.UserName = user.UserName;
         userFromStorage.PhoneNumber = user.PhoneNumber;
-        await storage.Users.UpdateUser(userFromStorage);
+        await storage.Users.UpdateUserAsync(userFromStorage);
     }
 }

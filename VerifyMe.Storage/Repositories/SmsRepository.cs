@@ -6,7 +6,7 @@ namespace VerifyMe.Storage.Repositories;
 
 public class SmsRepository(VerifyContext ef)
 {
-    public async Task<IList<Sms>> GetSmsByAppId(long appId)
+    public async Task<IList<Sms>> GetSmsByAppIdAsync(long appId)
     {
         return await ef.Sms
             .AsNoTracking()
@@ -16,19 +16,19 @@ public class SmsRepository(VerifyContext ef)
             .ToListAsync();
     }
 
-    public async Task CreateSms(Sms sms)
+    public async Task CreateSmsAsync(Sms sms)
     {
         await ef.Sms.AddAsync(sms);
         await ef.SaveChangesAsync();
     }
 
-    public async Task UpdateSms(Sms sms)
+    public async Task UpdateSmsAsync(Sms sms)
     {
         ef.Sms.Update(sms);
         await ef.SaveChangesAsync();
     }
 
-    public async Task RemoveSms(Sms sms)
+    public async Task RemoveSmsAsync(Sms sms)
     {
         ef.Remove(sms);
         await ef.SaveChangesAsync();

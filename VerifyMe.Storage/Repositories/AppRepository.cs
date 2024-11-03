@@ -6,35 +6,35 @@ namespace VerifyMe.Storage.Repositories;
 
 public class AppRepository(VerifyContext ef)
 {
-    public async Task<IList<App>> GetApps()
+    public async Task<IList<App>> GetAppsAsync()
     {
         return await ef.Apps.AsNoTracking().ToListAsync();
     }
 
-    public async Task<App?> GetAppById(long id)
+    public async Task<App?> GetAppByIdAsync(long id)
     {
         return await ef.Apps.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task CreateApp(App newApp)
+    public async Task CreateAppAsync(App newApp)
     {
         await ef.Apps.AddAsync(newApp);
         await ef.SaveChangesAsync();
     }
 
-    public async Task UpdateApp(App app)
+    public async Task UpdateAppAsync(App app)
     {
         ef.Apps.Update(app);
         await ef.SaveChangesAsync();
     }
 
-    public async Task RemoveApp(App app)
+    public async Task RemoveAppAsync(App app)
     {
         ef.Remove(app);
         await ef.SaveChangesAsync();
     }
 
-    public async Task<App?> GetAppByAccessToken(string accessToken)
+    public async Task<App?> GetAppByAccessTokenAsync(string accessToken)
     {
         return await ef.Apps.AsNoTracking().FirstOrDefaultAsync(x => x.AccessToken == accessToken);
     }

@@ -7,32 +7,32 @@ public class AppsServices(VerifyStorage storage)
 {
     public async Task<App?> GetAppAsync(long appId)
     {
-        return await storage.Apps.GetAppById(appId);
+        return await storage.Apps.GetAppByIdAsync(appId);
     }
     
-    public async Task<App?> GetAppByAccessToken(string accessToken)
+    public async Task<App?> GetAppByAccessTokenAsync(string accessToken)
     {
-        return await storage.Apps.GetAppByAccessToken(accessToken);
+        return await storage.Apps.GetAppByAccessTokenAsync(accessToken);
     }
     
-    public async Task CreateApp(App app)
+    public async Task CreateAppAsync(App app)
     {
         app.DateTimeCreated = DateTime.Now;
-        await storage.Apps.CreateApp(app);
+        await storage.Apps.CreateAppAsync(app);
     }
 
-    public async Task UpdateApp(App app)
+    public async Task UpdateAppAsync(App app)
     {
-        await storage.Apps.UpdateApp(app);
+        await storage.Apps.UpdateAppAsync(app);
     }
 
-    public async Task RemoveApp(App app)
+    public async Task RemoveAppAsync(App app)
     {
-        await storage.Apps.RemoveApp(app);
+        await storage.Apps.RemoveAppAsync(app);
     }
 
     public async Task<IList<App>> GetApps()
     {
-        return await storage.Apps.GetApps();
+        return await storage.Apps.GetAppsAsync();
     }
 }

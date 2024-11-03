@@ -6,24 +6,24 @@ namespace VerifyMe.Storage.Repositories;
 
 public class UsersRepository(VerifyContext ef)
 {
-    public async Task<User?> GetUserByPhone(string phone)
+    public async Task<User?> GetUserByPhoneAsync(string phone)
     {
         return await ef.Users.AsNoTracking().FirstOrDefaultAsync(x=> x.PhoneNumber == phone);
     }
 
-    public async Task AddUser(User user)
+    public async Task AddUserAsync(User user)
     {
         await ef.Users.AddAsync(user);
         await ef.SaveChangesAsync();
     }
 
-    public async Task UpdateUser(User user)
+    public async Task UpdateUserAsync(User user)
     {
         ef.Update(user);
         await ef.SaveChangesAsync();
     }
 
-    public async Task DeleteUser(User user)
+    public async Task DeleteUserAsync(User user)
     {
         ef.Remove(user);
         await ef.SaveChangesAsync();

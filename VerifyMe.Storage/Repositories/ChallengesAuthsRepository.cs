@@ -9,7 +9,7 @@ public class ChallengesAuthsRepository(VerifyContext ef)
 {
     public static readonly int DefaultLifeChallengeInSeconds = 60;
     
-    public async Task<ChallengeAuth?> GetChallengeById(string challengeId)
+    public async Task<ChallengeAuth?> GetChallengeByIdAsync(string challengeId)
     {
         return await ef.ChallengeAuths
             .AsNoTracking()
@@ -18,7 +18,7 @@ public class ChallengesAuthsRepository(VerifyContext ef)
             .FirstOrDefaultAsync(x => x.Id == challengeId);
     }
 
-    public async Task<IList<ChallengeAuth>> GetChallengesWithUnknownStatus()
+    public async Task<IList<ChallengeAuth>> GetChallengesWithUnknownStatusAsync()
     {
         return await ef.ChallengeAuths
             .AsNoTracking()
@@ -27,19 +27,19 @@ public class ChallengesAuthsRepository(VerifyContext ef)
             .ToListAsync();
     }
 
-    public async Task CreateChallenge(ChallengeAuth challenge)
+    public async Task CreateChallengeAsync(ChallengeAuth challenge)
     {
         await ef.AddAsync(challenge);
         await ef.SaveChangesAsync();
     }
     
-    public async Task UpdateChallenge(ChallengeAuth challenge)
+    public async Task UpdateChallengeAsync(ChallengeAuth challenge)
     {
         ef.Update(challenge);
         await ef.SaveChangesAsync();
     }
 
-    public async Task RemoveChallenge(ChallengeAuth challenge)
+    public async Task RemoveChallengeAsync(ChallengeAuth challenge)
     {
         ef.Remove(challenge);
         await ef.SaveChangesAsync();

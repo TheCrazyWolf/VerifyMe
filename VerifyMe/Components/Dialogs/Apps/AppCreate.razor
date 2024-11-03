@@ -42,7 +42,7 @@
 
     private async Task Save()
     {
-        await AppsService.CreateApp(App);
+        await AppsService.CreateAppAsync(App);
         Cancel();
     }
 

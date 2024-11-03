@@ -54,7 +54,7 @@ public class UpdateHandler(ILogger<UpdateHandler> logger, UsersService usersServ
                         continue;
                     
                     logger.LogInformation($"Обработка команды: {callBackQuery.Name}. от: ID {update.CallbackQuery.From.Id}");
-                    await callBackQuery.Execute(botClient, update.CallbackQuery);
+                    await callBackQuery.ExecuteAsync(botClient, update.CallbackQuery);
                 }
                 break;
             case UpdateType.Unknown:

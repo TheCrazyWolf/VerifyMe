@@ -108,7 +108,7 @@
 
     private async Task<IList<Sms>> GetSmsByApp(long appId)
     {
-        return await SmsServices.GetSmsByAppId(appId);
+        return await SmsServices.GetSmsByAppIdAsync(appId);
     }
 
 }

@@ -14,15 +14,15 @@ public class AuthController(SmsService smsService, AppsServices appsServices, Au
     [HttpPost("auth")]
     public async Task<ChallengeAuthResult> Auth([FromHeader] string accessToken, [FromBody] DtoPhoneAuth dto)
     {
-        var application = await appsServices.GetAppByAccessToken(accessToken);
+        var application = await appsServices.GetAppByAccessTokenAsync(accessToken);
         if (application == null) return new ChallengeAuthResult(isSuccess: false, systemMessage: "Доступ запрещен. Проверьте передачу токена в заголовке AccessToken");
-        var user = await authService.GetUserByPhoneNumber(dto.Phone);
+        var user = await authService.GetUserByPhoneNumberAsync(dto.Phone);
         if (user == null) return new ChallengeAuthResult(isSuccess: false, systemMessage: "Пользователь не зарегистрирован в телеграм-боте");        
-        await authService.RejectInActiveChallenges();
-        var challengeAuth = await authService.CreateChallengeAuth(application, user);
-        var smsResult = await smsService.SendSmsRequestAuth(application, challengeAuth, user);
+        await authService.RejectInActiveChallengesAsync();
+        var challengeAuth = await authService.CreateChallengeAuthAsync(application, user);
+        var smsResult = await smsService.SendSmsRequestAuthAsync(application, challengeAuth, user);
         if (!smsResult.IsSuccess) return new ChallengeAuthResult(isSuccess: smsResult.IsSuccess, systemMessage: smsResult.SystemMessage); 
-        return await authService.WaitResultOfChallenge(challengeAuth, ChallengesAuthsRepository.DefaultLifeChallengeInSeconds);
+        return await authService.WaitResultOfChallengeAsync(challengeAuth, ChallengesAuthsRepository.DefaultLifeChallengeInSeconds);
     }
     
     [HttpGet("auth")]

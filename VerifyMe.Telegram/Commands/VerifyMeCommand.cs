@@ -29,7 +29,7 @@ public class VerifyMeCommand(UsersService usersService) : BaseCommand
         
         if (message.Contact != null)
         {
-            await usersService.AddOrUpdate(new User()
+            await usersService.AddOrUpdateAsync(new User()
                 { Id = message.Contact.UserId ?? 0, PhoneNumber = message.Contact.PhoneNumber.GetNormalizedPhoneNumber(), UserName = message.From?.Username ?? string.Empty,
                     FirstName = message.Contact.FirstName, LastName = message.Contact.LastName ?? string.Empty });
             
