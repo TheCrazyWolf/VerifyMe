@@ -15,7 +15,7 @@ public class UsersService(VerifyStorage storage)
             user.FirstName = user.FirstName;
             user.LastName = user.LastName;
             user.UserName = user.UserName;
-            await storage.Users.AddUserAsync(user);
+            await storage.Users.AddUserAsync(user: user);
             return;
         }
         userFromStorage.Id = user.Id;
@@ -23,6 +23,6 @@ public class UsersService(VerifyStorage storage)
         userFromStorage.LastName = user.LastName;
         userFromStorage.UserName = user.UserName;
         userFromStorage.PhoneNumber = user.PhoneNumber;
-        await storage.Users.UpdateUserAsync(userFromStorage);
+        await storage.Users.UpdateUserAsync(user: userFromStorage);
     }
 }

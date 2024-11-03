@@ -12,7 +12,7 @@ public class AuthService(VerifyStorage storage)
 {
     public async Task<User?> GetUserByPhoneNumberAsync(string dtoPhone)
     {
-        return await storage.Users.GetUserByPhoneAsync(dtoPhone.GetNormalizedPhoneNumber());
+        return await storage.Users.GetUserByPhoneAsync(phone: dtoPhone.GetNormalizedPhoneNumber());
     }
 
     public async Task<ChallengeAuth> CreateChallengeAuthAsync(App application, User user)
@@ -25,7 +25,7 @@ public class AuthService(VerifyStorage storage)
             Status = ChallengeStatus.Unknown,
         };
         
-        await storage.ChallengesAuths.CreateChallengeAsync(challenge);
+        await storage.ChallengesAuths.CreateChallengeAsync(challenge: challenge);
         return challenge;
     }
 
@@ -36,7 +36,7 @@ public class AuthService(VerifyStorage storage)
         foreach (var challenge in challenges)
         {
             challenge.Status = ChallengeStatus.Rejected;
-            await storage.ChallengesAuths.UpdateChallengeAsync(challenge);
+            await storage.ChallengesAuths.UpdateChallengeAsync(challenge: challenge);
         }
     }
 
@@ -51,8 +51,7 @@ public class AuthService(VerifyStorage storage)
             {
                 case ChallengeStatus.Accept when actualChallenge.User is not null:
                     return new ChallengeAuthResult(true, "Успешная авторизация", 
-                        new DetailsUser(telegramId:actualChallenge.User.Id, username: actualChallenge.User.UserName, firstName: actualChallenge.User.FirstName, lastName: actualChallenge.User.LastName,
-                            phone: actualChallenge.User.PhoneNumber));
+                        new DetailsUser(telegramId:actualChallenge.User.Id, username: actualChallenge.User.UserName, firstName: actualChallenge.User.FirstName, lastName: actualChallenge.User.LastName, phone: actualChallenge.User.PhoneNumber));
                 case ChallengeStatus.Rejected:
                     return new ChallengeAuthResult(false, "Пользователь не принял авторизацию");
                 default:
@@ -68,7 +67,7 @@ public class AuthService(VerifyStorage storage)
         ChallengeStatus newStatus)
     {
         await RejectInActiveChallengesAsync();
-        var challenge = await storage.ChallengesAuths.GetChallengeByIdAsync(challengeId);
+        var challenge = await storage.ChallengesAuths.GetChallengeByIdAsync(challengeId: challengeId);
         if (challenge is null) return new ChallengeAuthResult(false, $"ChallengeId #({challengeId}) not found");
         if(challenge.Status is ChallengeStatus.Accept or ChallengeStatus.Rejected) return new ChallengeAuthResult(false, "⚠️ Время подтверждения истекло"); 
         challenge.Status = newStatus;

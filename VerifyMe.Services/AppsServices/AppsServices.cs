@@ -18,17 +18,17 @@ public class AppsServices(VerifyStorage storage)
     public async Task CreateAppAsync(App app)
     {
         app.DateTimeCreated = DateTime.Now;
-        await storage.Apps.CreateAppAsync(app);
+        await storage.Apps.CreateAppAsync(newApp: app);
     }
 
     public async Task UpdateAppAsync(App app)
     {
-        await storage.Apps.UpdateAppAsync(app);
+        await storage.Apps.UpdateAppAsync(app: app);
     }
 
     public async Task RemoveAppAsync(App app)
     {
-        await storage.Apps.RemoveAppAsync(app);
+        await storage.Apps.RemoveAppAsync(app: app);
     }
 
     public async Task<IList<App>> GetApps()
