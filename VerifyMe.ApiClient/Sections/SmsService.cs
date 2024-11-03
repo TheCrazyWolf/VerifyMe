@@ -5,7 +5,7 @@ using VerifyMe.ApiClient.Models.Resuls.Sms;
 
 namespace VerifyMe.ApiClient.Sections;
 
-public class SmsService(string url, string applicationToken) : VerifyBase(url, applicationToken)
+public class SmsService(string url, string applicationToken) : VerifyBase(url)
 {
     private readonly string route = "/api/sms";
     

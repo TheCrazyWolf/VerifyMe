@@ -5,7 +5,7 @@ using VerifyMe.ApiClient.Models.Resuls.Auth;
 
 namespace VerifyMe.ApiClient.Sections;
 
-public class AuthService(string url, string applicationToken) : VerifyBase(url, applicationToken)
+public class AuthService(string url, string applicationToken) : VerifyBase(url)
 {
     private readonly string route = "/api/challenge";
     
