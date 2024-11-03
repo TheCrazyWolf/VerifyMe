@@ -5,7 +5,9 @@ using VerifyMe.ApiClient.Models.Post.Sms;
 
 var host = "http://127.0.0.1:5002";
 var accessTokenApp = "4162f1e9899c47229125305a59304535";
-var phoneForExample = "79991231212";
+Console.WriteLine("Перейдите в бота, /start -> подтвердите свой номер телефона.\n" +
+                  "Затем введите номер телефона сюда и мы отправим сообщение сюда сюда");
+var phoneForExample = Console.ReadLine() ?? string.Empty;
 
 VerifyApi verifyApi = new VerifyApi(host, accessTokenApp);
 
@@ -20,8 +22,9 @@ if (smsResult is not null && smsResult.IsSuccess)
     int maxCount = 2;
     for (int i = 0; i <= maxCount; i++)
     {
-        if (Console.ReadLine() == code) return;
-        Console.WriteLine($"Код неверный. У вас осталось: {maxCount-i} попыток");
+        var readTextFromConsole = Console.ReadLine();
+        if (readTextFromConsole != code) Console.WriteLine($"Код неверный. У вас осталось: {maxCount-i} попыток");
+        if(readTextFromConsole == code) i = maxCount; 
     }
 }
 
@@ -35,6 +38,6 @@ if (challengeAuthResult is not null)
     Console.WriteLine($"{challengeAuthResult.SystemMessage}");
     if (challengeAuthResult.IsSuccess &&  challengeAuthResult.User is not null)
     {
-        Console.WriteLine($"Вы авторизировались как: {challengeAuthResult.User.Username}");
+        Console.WriteLine($"Вы авторизировались как: {challengeAuthResult.User.Username} с TelegramID: {challengeAuthResult.User.TelegramId}");
     }
 }
