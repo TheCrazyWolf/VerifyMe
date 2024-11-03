@@ -10,6 +10,12 @@ namespace VerifyMe.Controllers;
 [ApiController]
 public class SmsController(SmsService smsService, AppsServices appsServices) : ControllerBase
 {
+    [HttpGet("Send")]
+    public async Task<SmsResult> Send(string accessToken, string phone, string message)
+    {
+        return await Send(accessToken: accessToken, new PostSendSms(phone: phone, message: message));
+    }
+    
     [HttpPost("Send")]
     public async Task<SmsResult> Send([FromHeader] string accessToken, [FromBody] PostSendSms dto)
     {
