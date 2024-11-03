@@ -7,7 +7,7 @@ namespace VerifyMe.ApiClient.Sections;
 
 public class AuthService(string url, string applicationToken) : VerifyBase(url, applicationToken)
 {
-    private readonly string route = "/api/auth";
+    private readonly string route = "/api/challenge";
     
     public async Task<ChallengeAuthResult?> Auth(DtoPhoneAuth dto)
     {

@@ -7,11 +7,11 @@ using VerifyMe.Storage.Repositories;
 
 namespace VerifyMe.Controllers;
 
-[Route("api/auth")]
+[Route("api/challenge")]
 [ApiController]
 public class AuthController(SmsService smsService, AppsServices appsServices, AuthService authService) : ControllerBase
 {
-    [HttpPost("Auth")]
+    [HttpPost("auth")]
     public async Task<ChallengeAuthResult> Auth([FromHeader] string accessToken, [FromBody] DtoPhoneAuth dto)
     {
         var application = await appsServices.GetAppByAccessToken(accessToken);
@@ -25,7 +25,7 @@ public class AuthController(SmsService smsService, AppsServices appsServices, Au
         return await authService.WaitResultOfChallenge(challengeAuth, ChallengesAuthsRepository.DefaultLifeChallengeInSeconds);
     }
     
-    [HttpGet("Auth")]
+    [HttpGet("auth")]
     public async Task<ChallengeAuthResult> Auth(string accessToken, string phone)
     {
         return await Auth(accessToken: accessToken, new DtoPhoneAuth { Phone = phone });
