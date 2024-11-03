@@ -38,7 +38,67 @@
 :-------------------------:|:-------------------------:
 ![](/GitDemoScreenshots/Requests/exampleRequest1.png?raw=true)  |  ![](/GitDemoScreenshots/Requests/exampleRequest2.png?raw=true)
 
+### Авторизация используя телеграм и номер телефона
+1. Сформируйте Post-запрос на example.com/api/auth/auth со следующими данными:
+   заголовок accessToken = ключ доступа к приложению, корторый выдан через веб-панель
+   В теле запроса::
+```
+{
+    "Phone": "8(923)-XXX-XX-XX",
+}
+```
+3. Получите в ответ ChallengeAuthResult, который содержит информацию об успешности запроса и системым сообщением и данных пользователя
+
+Пример сообщения при попытки авторизоваться            |  Пример возращаемых данных в случае авторизации
+:-------------------------:|:-------------------------:
+![](/GitDemoScreenshots/Auth/AuthExample1.png?raw=true)  |  ![](/GitDemoScreenshots/Auth/AuthExample2.png?raw=true)
+
 ### Пользователям, получающие смс-коды
 1. Необходимо пользователя перенаправить в телеграм-бота для подтверждения номера телефона в нем
 2. После чего, предложите на своей платформе ввести пользователю номер телефона
 3. Выполните запрос и получите ответ
+
+
+### Клиент в проекте
+Пример создания экземпляра клиента в проекте
+```csharp
+var host = "http://127.0.0.1:5002";
+var accessTokenApp = "4162f1e9899c47229125305a59304535";
+var phoneForExample = "79991231212";
+
+VerifyApi verifyApi = new VerifyApi(host, accessTokenApp);
+```
+
+Пример отправки смс кодов:
+```csharp
+var code = new VerificationCodeGenerator().GenerateCode(8);
+var sms = new SendSms(phoneForExample, $"Код для проверки <b>{code}</b>");
+var smsResult = await verifyApi.Sms.SendSmsAsync(sms);
+
+if (smsResult is not null && smsResult.IsSuccess)
+{
+    Console.WriteLine($"{smsResult.SystemMessage}. Введите проверочный код:");
+    int maxCount = 2;
+    for (int i = 0; i <= maxCount; i++)
+    {
+        if (Console.ReadLine() == code) return;
+        Console.WriteLine($"Код неверный. У вас осталось: {maxCount-i} попыток");
+    }
+}
+```
+
+Пример авторизации
+```csharp
+var dtoPhone = new DtoPhoneAuth(phoneForExample);
+Console.WriteLine($"Отправили запрос на авторизаци. Перейдите в бота и нажмите нужное действие");
+var challengeAuthResult = await verifyApi.Auth.Auth(dtoPhone);
+
+if (challengeAuthResult is not null)
+{
+    Console.WriteLine($"{challengeAuthResult.SystemMessage}");
+    if (challengeAuthResult.IsSuccess &&  challengeAuthResult.User is not null)
+    {
+        Console.WriteLine($"Вы авторизировались как: {challengeAuthResult.User.Username}");
+    }
+}
+```
