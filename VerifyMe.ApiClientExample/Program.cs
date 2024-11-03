@@ -14,7 +14,7 @@ var code = new VerificationCodeGenerator().GenerateCode(8);
 var sms = new SendSms(phoneForExample, $"Код для проверки <b>{code}</b>");
 var smsResult = await verifyApi.Sms.SendSmsAsync(sms);
 
-if (smsResult is not null)
+if (smsResult is not null && smsResult.IsSuccess)
 {
     Console.WriteLine($"{smsResult.SystemMessage}. Введите проверочный код:");
     int maxCount = 2;
