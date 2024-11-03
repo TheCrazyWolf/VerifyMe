@@ -30,9 +30,4 @@ public class AuthController(SmsService smsService, AppsServices appsServices, Au
     {
         return await Auth(accessToken: accessToken, new DtoPhoneAuth { Phone = phone });
     }
-
-    public class DtoPhoneAuth
-    {
-        public string Phone { get; set; } = string.Empty;
-    }
 }
