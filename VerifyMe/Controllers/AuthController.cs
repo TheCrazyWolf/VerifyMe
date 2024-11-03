@@ -21,7 +21,7 @@ public class AuthController(SmsService smsService, AppsServices appsServices, Au
         var challengeAuth = await authService.CreateChallengeAuth(application, user);
         var smsResult = await smsService.SendSmsRequestAuth(application, challengeAuth, user);
         if (!smsResult.IsSuccess) return new ChallengeAuthResult(isSuccess: smsResult.IsSuccess, systemMessage: smsResult.SystemMessage); 
-        return await authService.WaitResultOfChallenge(challengeAuth, 60);
+        return await authService.WaitResultOfChallenge(challengeAuth, 28);
     }
     
     [HttpGet("Auth")]
