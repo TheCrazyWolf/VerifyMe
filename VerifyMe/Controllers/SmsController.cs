@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using VerifyMe.Models.DTO;
-using VerifyMe.Models.DTO.Results;
+using VerifyMe.Models.DTO.Sms;
 using VerifyMe.Services.AppsServices;
 using VerifyMe.Services.SmsServices;
 

@@ -1,0 +1,44 @@
+﻿using Microsoft.EntityFrameworkCore;
+using VerifyMe.Models.DLA;
+using VerifyMe.Models.Enums;
+using VerifyMe.Storage.Context;
+
+namespace VerifyMe.Storage.Repositories;
+
+public class ChallengesAuthsRepository(VerifyContext ef)
+{
+    public static readonly int DefaultLifeChallengeInMinute = 1;
+    
+    public async Task<ChallengeAuth?> GetChallengeById(string challengeId)
+    {
+        return await ef.ChallengeAuths
+            .Include(x=> x.User)
+            .FirstOrDefaultAsync(x => x.Id.ToString() == challengeId);
+    }
+
+    public async Task<IList<ChallengeAuth>> GetChallengesWithUnknownStatus()
+    {
+        return await ef.ChallengeAuths
+            .Where(x => x.Status == ChallengeStatus.Unknown)
+            .Where(x => x.Created >= DateTime.Now.AddMinutes(-DefaultLifeChallengeInMinute))
+            .ToListAsync();
+    }
+
+    public async Task CreateChallenge(ChallengeAuth challenge)
+    {
+        await ef.AddAsync(challenge);
+        await ef.SaveChangesAsync();
+    }
+    
+    public async Task UpdateChallenge(ChallengeAuth challenge)
+    {
+        ef.Update(challenge);
+        await ef.SaveChangesAsync();
+    }
+
+    public async Task RemoveChallenge(ChallengeAuth challenge)
+    {
+        ef.Remove(challenge);
+        await ef.SaveChangesAsync();
+    }
+}
