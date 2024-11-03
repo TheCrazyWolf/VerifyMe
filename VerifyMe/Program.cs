@@ -3,6 +3,7 @@ using MudBlazor.Services;
 using Telegram.Bot;
 using VerifyMe.Components;
 using VerifyMe.Services.AppsServices;
+using VerifyMe.Services.AuthServices;
 using VerifyMe.Services.SmsServices;
 using VerifyMe.Services.UsersServices;
 using VerifyMe.Storage;
@@ -29,6 +30,7 @@ builder.Services.AddScoped<VerifyStorage>();
 builder.Services.AddScoped<UsersService>();
 builder.Services.AddScoped<SmsService>();
 builder.Services.AddScoped<AppsServices>();
+builder.Services.AddScoped<AuthService>();
 
 // Add MudBlazor services
 builder.Services.AddMudServices();

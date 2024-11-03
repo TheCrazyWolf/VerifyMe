@@ -6,7 +6,7 @@ namespace VerifyMe.Models.DLA;
 
 public class ChallengeAuth 
 {
-    [Key] public Guid Id { get; set; }
+    [Key] public string Id { get; set; } = Guid.NewGuid().ToString();
     /// <summary>
     /// ID Пользователя
     /// </summary>

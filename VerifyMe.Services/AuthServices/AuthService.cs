@@ -8,25 +8,11 @@ using VerifyMe.Storage;
 
 namespace VerifyMe.Services.AuthServices;
 
-public class AuthService(VerifyStorage storage, ITelegramBotClient botClient)
+public class AuthService(VerifyStorage storage)
 {
-    
-    public async Task<SmsResult> SendSmsAsync(App app, string phoneNumber, string message)
-    {
-        phoneNumber = phoneNumber.GetNormalizedPhoneNumber();
-        var user = await storage.Users.GetUserByPhone(phoneNumber);
-        if (user == null) return new SmsResult(false, "Не удалось отправить сообщение. Пожалуйста перейдите, в телеграм бота и подтвердите свой номер телефона для получение смс-кодов.");
-        if (string.IsNullOrEmpty(message)) return new SmsResult(false, "Сообщение не может быть пустым");
-        message += $"\n\nℹ️ Вы получили это сообщение от сервиса: {app.Name}";
-        var isSuccess = await botClient.TrySendMessage(user.Id, message);
-        Sms sms = new Sms { AppId = app.Id, UserId = user.Id, Message = message, IsDelivered  = isSuccess, DateTimeSend = DateTime.Now};
-        await storage.Sms.CreateSms(sms);
-        return new SmsResult(isSuccess, isSuccess ? "Сообщение успешно отправлено" : "Не удалость отправить сообщение. Пользователь деактивировал телеграм бота или проблемы с доступом к телеграму.");
-    }
-
     public async Task<User?> GetUserByPhoneNumber(string dtoPhone)
     {
-        return await storage.Users.GetUserByPhone(dtoPhone);
+        return await storage.Users.GetUserByPhone(dtoPhone.GetNormalizedPhoneNumber());
     }
 
     public async Task<ChallengeAuth> CreateChallengeAuth(App application, User user)
@@ -78,5 +64,17 @@ public class AuthService(VerifyStorage storage, ITelegramBotClient botClient)
         }
         
         return new ChallengeAuthResult(false, "Пользователь не принял авторизацию");
+    }
+
+    public async Task<ChallengeAuthResult> UpdateChallengeFromCallbackData(string challengeId,
+        ChallengeStatus newStatus)
+    {
+        await RejectInActiveChallenges();
+        var challenge = await storage.ChallengesAuths.GetChallengeById(challengeId);
+        if(challenge is null) return new ChallengeAuthResult(false, "ChallengeId not found");
+        if(challenge.Status is ChallengeStatus.Accept or ChallengeStatus.Rejected) return new ChallengeAuthResult(false, "Уже обработано"); 
+        challenge.Status = newStatus;
+        await storage.ChallengesAuths.UpdateChallenge(challenge);
+        return new ChallengeAuthResult(true, "Успешная авторизация");
     }
 }

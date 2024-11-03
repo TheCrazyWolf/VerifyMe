@@ -45,8 +45,7 @@ namespace VerifyMe.Storage.Migrations
 
             modelBuilder.Entity("VerifyMe.Models.DLA.ChallengeAuth", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("Id")
                         .HasColumnType("TEXT");
 
                     b.Property<long?>("ApplicationId")
