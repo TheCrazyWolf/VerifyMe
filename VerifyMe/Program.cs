@@ -1,3 +1,4 @@
+using System.Net;
 using Blazored.LocalStorage;
 using MudBlazor.Services;
 using Telegram.Bot;
@@ -31,6 +32,10 @@ builder.Services.AddTransient<UsersService>();
 builder.Services.AddTransient<SmsService>();
 builder.Services.AddTransient<AppsServices>();
 builder.Services.AddTransient<AuthService>();
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Listen(IPAddress.Any, 5002);
+});
 
 // Add MudBlazor services
 builder.Services.AddMudServices();
