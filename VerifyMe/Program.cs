@@ -25,12 +25,12 @@ builder.Services.AddHttpClient("telegram_bot_client").RemoveAllLoggers()
 builder.Services.AddScoped<UpdateHandler>();
 builder.Services.AddScoped<ReceiverService>();
 builder.Services.AddHostedService<PollingService>();
-builder.Services.AddScoped<VerifyContext>();
-builder.Services.AddScoped<VerifyStorage>();
-builder.Services.AddScoped<UsersService>();
-builder.Services.AddScoped<SmsService>();
-builder.Services.AddScoped<AppsServices>();
-builder.Services.AddScoped<AuthService>();
+builder.Services.AddTransient<VerifyContext>();
+builder.Services.AddTransient<VerifyStorage>();
+builder.Services.AddTransient<UsersService>();
+builder.Services.AddTransient<SmsService>();
+builder.Services.AddTransient<AppsServices>();
+builder.Services.AddTransient<AuthService>();
 
 // Add MudBlazor services
 builder.Services.AddMudServices();

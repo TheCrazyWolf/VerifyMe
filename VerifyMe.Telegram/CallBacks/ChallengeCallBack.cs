@@ -25,8 +25,7 @@ public class ChallengeCallBack(IServiceProvider serviceProvider) : BaseCallBackQ
             return;
         }
         
-        /*var authService = serviceProvider.GetService<AuthService>(); if(authService is null) return;*/
-        var authService = new AuthService(new VerifyStorage(new VerifyContext()));
+        var authService = serviceProvider.GetService<AuthService>(); if(authService is null) return;
         var result = await authService.UpdateChallengeFromCallbackData(array[0], challengeStatus);
 
         await client.TryEditMessage(chatId: callbackQuery.Message.Chat.Id, messageId: callbackQuery.Message.MessageId,
