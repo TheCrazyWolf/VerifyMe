@@ -28,6 +28,6 @@ public class AuthController(SmsService smsService, AppsServices appsServices, Au
     [HttpGet("auth")]
     public async Task<ChallengeAuthResult> Auth(string accessToken, string phone)
     {
-        return await Auth(accessToken: accessToken, new DtoPhoneAuth(phone));
+        return await Auth(accessToken: accessToken, new DtoPhoneAuth(phone: phone));
     }
 }
