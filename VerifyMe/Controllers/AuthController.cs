@@ -23,6 +23,12 @@ public class AuthController(SmsService smsService, AppsServices appsServices, Au
         if (!smsResult.IsSuccess) return new ChallengeAuthResult(isSuccess: smsResult.IsSuccess, systemMessage: smsResult.SystemMessage); 
         return await authService.WaitResultOfChallenge(challengeAuth, 60);
     }
+    
+    [HttpGet("Auth")]
+    public async Task<ChallengeAuthResult> Auth(string accessToken, string phone)
+    {
+        return await Auth(accessToken: accessToken, new DtoPhoneAuth { Phone = phone });
+    }
 
     public class DtoPhoneAuth
     {
