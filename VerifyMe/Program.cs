@@ -32,9 +32,9 @@ builder.Services.AddTransient<UsersService>();
 builder.Services.AddTransient<SmsService>();
 builder.Services.AddTransient<AppsServices>();
 builder.Services.AddTransient<AuthService>();
-builder.WebHost.ConfigureKestrel(options =>
+builder.WebHost.ConfigureKestrel((httpClient, options) =>
 {
-    options.Listen(IPAddress.Any, 5002);
+    options.Listen(IPAddress.Any, httpClient.Configuration.GetValue<int?>("Port") ?? 5002);
 });
 
 // Add MudBlazor services
@@ -61,8 +61,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 // Маршруты для Web API
 app.MapControllers();
