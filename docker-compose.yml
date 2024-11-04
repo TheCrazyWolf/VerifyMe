@@ -1,0 +1,6 @@
+﻿services:
+  verifyme:
+    image: verifyme
+    build:
+      context: .
+      dockerfile: VerifyMe/Dockerfile

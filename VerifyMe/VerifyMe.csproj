@@ -21,4 +21,11 @@
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Components\Dev\SwagDoc.razor" />
     </ItemGroup>
+
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
 </Project>
