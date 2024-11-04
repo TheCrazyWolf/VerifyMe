@@ -13,6 +13,6 @@ public static class PhoneNormalizer
         else if (phoneNumber.StartsWith("7"))
             phoneNumber = "+" + phoneNumber;
 
-        return phoneNumber;
+        return phoneNumber.Trim();
     }
 }
