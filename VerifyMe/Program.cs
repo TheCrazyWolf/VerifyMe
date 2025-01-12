@@ -1,5 +1,6 @@
 using System.Net;
 using Blazored.LocalStorage;
+using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using Telegram.Bot;
 using VerifyMe.Components;
@@ -65,5 +66,11 @@ app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 // Маршруты для Web API
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<VerifyContext>();
+    dbContext.Database.Migrate();
+}
 
 app.Run();
