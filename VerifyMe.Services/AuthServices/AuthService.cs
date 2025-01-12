@@ -41,6 +41,13 @@ public class AuthService(VerifyStorage storage)
         {
             challenge.Status = ChallengeStatus.Rejected;
         }
+        
+        foreach (var challenge in _challengeAuths
+                     .Where(x => DateTime.Now >= x.Created.AddMinutes(30)).ToList())
+        {
+            _challengeAuths.Remove(challenge);
+        }
+        
         return Task.CompletedTask;
     }
 
@@ -50,7 +57,7 @@ public class AuthService(VerifyStorage storage)
         {
             var actualChallenge = _challengeAuths.FirstOrDefault(x=> x.Id == challengeAuth.Id);
             if(actualChallenge is null) 
-                return new ChallengeAuthResult(false, $"ChallengeId {challengeAuth.Id} not found123");
+                return new ChallengeAuthResult(false, $"ChallengeId {challengeAuth.Id} not found");
 
             switch (actualChallenge.Status)
             {
@@ -58,8 +65,7 @@ public class AuthService(VerifyStorage storage)
                     return new ChallengeAuthResult(true, "Успешная авторизация", 
                         new DetailsUser(telegramId:actualChallenge.User.Id, username: actualChallenge.User.UserName, 
                             firstName: actualChallenge.User.FirstName, lastName: actualChallenge.User.LastName, phone: actualChallenge.User.PhoneNumber));
-                case ChallengeStatus.Rejected:
-                    return new ChallengeAuthResult(false, "Пользователь не принял авторизацию");
+                case ChallengeStatus.Rejected: return new ChallengeAuthResult(false, "Пользователь не принял авторизацию");
                 default:
                     await Task.Delay(1000);
                     break;
@@ -73,8 +79,7 @@ public class AuthService(VerifyStorage storage)
     {
         await RejectInActiveChallenges();
         var challenge = _challengeAuths.FirstOrDefault(x => x.Id == challengeId);
-        if (challenge is null) 
-            return new ChallengeAuthResult(false, $"ChallengeId {challengeId} not found000");
+        if (challenge is null) return new ChallengeAuthResult(false, $"ChallengeId {challengeId} not found");
         if(challenge.Status is ChallengeStatus.Accept or ChallengeStatus.Rejected) return new ChallengeAuthResult(false, "⚠️ Время подтверждения истекло"); 
         challenge.Status = newStatus;
         return new ChallengeAuthResult(true, newStatus is ChallengeStatus.Accept ? $"✅ Успешная авторизация в сервисе: <b>{challenge.Application?.Name}</b>" : $"⚠️ Запрос на авторизацию отклонен в сервисе: <b>{challenge.Application?.Name} </b>");
