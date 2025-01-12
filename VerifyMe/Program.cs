@@ -1,5 +1,6 @@
 using System.Net;
 using Blazored.LocalStorage;
+using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using Telegram.Bot;
 using VerifyMe.Components;
@@ -31,7 +32,7 @@ builder.Services.AddTransient<VerifyStorage>();
 builder.Services.AddTransient<UsersService>();
 builder.Services.AddTransient<SmsService>();
 builder.Services.AddTransient<AppsServices>();
-builder.Services.AddTransient<AuthService>();
+builder.Services.AddSingleton<AuthService>();
 builder.WebHost.ConfigureKestrel((httpClient, options) =>
 {
     options.Listen(IPAddress.Any, httpClient.Configuration.GetValue<int?>("Port") ?? 5002);
@@ -65,5 +66,11 @@ app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 // Маршруты для Web API
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<VerifyContext>();
+    dbContext.Database.Migrate();
+}
 
 app.Run();

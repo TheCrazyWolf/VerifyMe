@@ -5,11 +5,9 @@ namespace VerifyMe.Storage.Context;
 
 public sealed class VerifyContext : DbContext
 {
-    public VerifyContext() => Database.MigrateAsync();
     public DbSet<App> Apps { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Sms> Sms { get; set; }
-    public DbSet<ChallengeAuth> ChallengeAuths { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
