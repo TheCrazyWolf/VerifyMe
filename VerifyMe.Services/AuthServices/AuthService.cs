@@ -1,7 +1,5 @@
-﻿using Telegram.Bot;
-using VerifyMe.Models.DLA;
+﻿using VerifyMe.Models.DLA;
 using VerifyMe.Models.DTO.ChallengeAuth;
-using VerifyMe.Models.DTO.Sms;
 using VerifyMe.Models.Enums;
 using VerifyMe.Services.Extensions;
 using VerifyMe.Storage;
@@ -10,33 +8,36 @@ namespace VerifyMe.Services.AuthServices;
 
 public class AuthService(VerifyStorage storage)
 {
+    private const int DefaultLifeChallengeInSeconds = 60;
+    private readonly List<ChallengeAuth> _challengeAuths = [];
+    
     public async Task<User?> GetUserByPhoneNumberAsync(string dtoPhone)
     {
         return await storage.Users.GetUserByPhoneAsync(phone: dtoPhone.GetNormalizedPhoneNumber());
     }
 
-    public async Task<ChallengeAuth> CreateChallengeAuthAsync(App application, User user)
+    public ChallengeAuth CreateChallengeAuth(App application, User user)
     {
-        var challenge = new ChallengeAuth()
+        var challenge = new ChallengeAuth
         {
+            Id = Guid.NewGuid().ToString().Split("-").First(),
             UserId = user.Id,
             ApplicationId = application.Id,
             Created = DateTime.Now,
             Status = ChallengeStatus.Unknown,
         };
         
-        await storage.ChallengesAuths.CreateChallengeAsync(challenge: challenge);
+        _challengeAuths.Add(challenge);
         return challenge;
     }
 
-    public async Task RejectInActiveChallengesAsync()
+    public void RejectInActiveChallenges()
     {
-        var challenges = await storage.ChallengesAuths.GetChallengesWithUnknownStatusAsync();
-
-        foreach (var challenge in challenges)
+        foreach (var challenge in _challengeAuths
+                     .Where(x => x.Status == ChallengeStatus.Unknown)
+                     .Where(x => DateTime.Now >= x.Created.AddSeconds(DefaultLifeChallengeInSeconds)).ToList())
         {
             challenge.Status = ChallengeStatus.Rejected;
-            await storage.ChallengesAuths.UpdateChallengeAsync(challenge: challenge);
         }
     }
 
@@ -44,7 +45,7 @@ public class AuthService(VerifyStorage storage)
     {
         for (int i = 0; i < attempts; i++)
         {
-            var actualChallenge = await storage.ChallengesAuths.GetChallengeByIdAsync(challengeAuth.Id);
+            var actualChallenge = _challengeAuths.FirstOrDefault(x=> x.Id == challengeAuth.Id);
             if(actualChallenge is null) return new ChallengeAuthResult(false, $"ChallengeId {challengeAuth.Id} not found");
 
             switch (actualChallenge.Status)
@@ -63,15 +64,13 @@ public class AuthService(VerifyStorage storage)
         return new ChallengeAuthResult(false, "Пользователь не принял авторизацию");
     }
 
-    public async Task<ChallengeAuthResult> UpdateChallengeFromCallbackDataAsync(string challengeId,
-        ChallengeStatus newStatus)
+    public ChallengeAuthResult UpdateChallengeFromCallbackDataAsync(string challengeId, ChallengeStatus newStatus)
     {
-        await RejectInActiveChallengesAsync();
-        var challenge = await storage.ChallengesAuths.GetChallengeByIdAsync(challengeId: challengeId);
-        if (challenge is null) return new ChallengeAuthResult(false, $"ChallengeId #({challengeId}) not found");
+        RejectInActiveChallenges();
+        var challenge = _challengeAuths.FirstOrDefault(x => x.Id == challengeId);
+        if (challenge is null) return new ChallengeAuthResult(false, $"ChallengeId {challengeId} not found");
         if(challenge.Status is ChallengeStatus.Accept or ChallengeStatus.Rejected) return new ChallengeAuthResult(false, "⚠️ Время подтверждения истекло"); 
         challenge.Status = newStatus;
-        await storage.ChallengesAuths.UpdateChallengeAsync(challenge);
         return new ChallengeAuthResult(true, newStatus is ChallengeStatus.Accept ? $"✅ Успешная авторизация в сервисе: <b>{challenge.Application?.Name}</b>" : $"⚠️ Запрос на авторизацию отклонен в сервисе: <b>{challenge.Application?.Name} </b>");
     }
 }
