@@ -17,8 +17,7 @@ public class AuthController(SmsService smsService, AppsServices appsServices, Au
         if (application == null) return new ChallengeAuthResult(isSuccess: false, systemMessage: "Доступ запрещен. Проверьте передачу токена в заголовке AccessToken");
         var user = await authService.GetUserByPhoneNumberAsync(dto.Phone);
         if (user == null) return new ChallengeAuthResult(isSuccess: false, systemMessage: "Пользователь не зарегистрирован в телеграм-боте");        
-        authService.RejectInActiveChallenges();
-        var challengeAuth = authService.CreateChallengeAuth(application: application, user: user);
+        var challengeAuth = await authService.CreateChallengeAuth(application: application, user: user);
         var smsResult = await smsService.SendSmsRequestAuthAsync(application, challengeAuth, user);
         if (!smsResult.IsSuccess) return new ChallengeAuthResult(isSuccess: smsResult.IsSuccess, systemMessage: smsResult.SystemMessage); 
         return await authService.WaitResultOfChallengeAsync(challengeAuth, attempts: 60);

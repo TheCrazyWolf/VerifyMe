@@ -16,22 +16,24 @@ public class AuthService(VerifyStorage storage)
         return await storage.Users.GetUserByPhoneAsync(phone: dtoPhone.GetNormalizedPhoneNumber());
     }
 
-    public ChallengeAuth CreateChallengeAuth(App application, User user)
+    public Task<ChallengeAuth> CreateChallengeAuth(App application, User user)
     {
         var challenge = new ChallengeAuth
         {
             Id = Guid.NewGuid().ToString().Split("-").First(),
             UserId = user.Id,
+            User = user,
             ApplicationId = application.Id,
+            Application = application,
             Created = DateTime.Now,
             Status = ChallengeStatus.Unknown,
         };
         
         _challengeAuths.Add(challenge);
-        return challenge;
+        return Task.FromResult(challenge);
     }
 
-    public void RejectInActiveChallenges()
+    public Task RejectInActiveChallenges()
     {
         foreach (var challenge in _challengeAuths
                      .Where(x => x.Status == ChallengeStatus.Unknown)
@@ -39,6 +41,7 @@ public class AuthService(VerifyStorage storage)
         {
             challenge.Status = ChallengeStatus.Rejected;
         }
+        return Task.CompletedTask;
     }
 
     public async Task<ChallengeAuthResult> WaitResultOfChallengeAsync(ChallengeAuth challengeAuth, int attempts)
@@ -46,13 +49,15 @@ public class AuthService(VerifyStorage storage)
         for (int i = 0; i < attempts; i++)
         {
             var actualChallenge = _challengeAuths.FirstOrDefault(x=> x.Id == challengeAuth.Id);
-            if(actualChallenge is null) return new ChallengeAuthResult(false, $"ChallengeId {challengeAuth.Id} not found");
+            if(actualChallenge is null) 
+                return new ChallengeAuthResult(false, $"ChallengeId {challengeAuth.Id} not found123");
 
             switch (actualChallenge.Status)
             {
                 case ChallengeStatus.Accept when actualChallenge.User is not null:
                     return new ChallengeAuthResult(true, "Успешная авторизация", 
-                        new DetailsUser(telegramId:actualChallenge.User.Id, username: actualChallenge.User.UserName, firstName: actualChallenge.User.FirstName, lastName: actualChallenge.User.LastName, phone: actualChallenge.User.PhoneNumber));
+                        new DetailsUser(telegramId:actualChallenge.User.Id, username: actualChallenge.User.UserName, 
+                            firstName: actualChallenge.User.FirstName, lastName: actualChallenge.User.LastName, phone: actualChallenge.User.PhoneNumber));
                 case ChallengeStatus.Rejected:
                     return new ChallengeAuthResult(false, "Пользователь не принял авторизацию");
                 default:
@@ -64,11 +69,12 @@ public class AuthService(VerifyStorage storage)
         return new ChallengeAuthResult(false, "Пользователь не принял авторизацию");
     }
 
-    public ChallengeAuthResult UpdateChallengeFromCallbackDataAsync(string challengeId, ChallengeStatus newStatus)
+    public async Task<ChallengeAuthResult> UpdateChallengeFromCallbackDataAsync(string challengeId, ChallengeStatus newStatus)
     {
-        RejectInActiveChallenges();
+        await RejectInActiveChallenges();
         var challenge = _challengeAuths.FirstOrDefault(x => x.Id == challengeId);
-        if (challenge is null) return new ChallengeAuthResult(false, $"ChallengeId {challengeId} not found");
+        if (challenge is null) 
+            return new ChallengeAuthResult(false, $"ChallengeId {challengeId} not found000");
         if(challenge.Status is ChallengeStatus.Accept or ChallengeStatus.Rejected) return new ChallengeAuthResult(false, "⚠️ Время подтверждения истекло"); 
         challenge.Status = newStatus;
         return new ChallengeAuthResult(true, newStatus is ChallengeStatus.Accept ? $"✅ Успешная авторизация в сервисе: <b>{challenge.Application?.Name}</b>" : $"⚠️ Запрос на авторизацию отклонен в сервисе: <b>{challenge.Application?.Name} </b>");
